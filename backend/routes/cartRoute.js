@@ -87,4 +87,4 @@ router.get("/", verifyTokenAndAdmin, async (req, res, next) => {
     return res.status(500).json(err);
   }
 });
-module.exports = router;
+module.exports = router
