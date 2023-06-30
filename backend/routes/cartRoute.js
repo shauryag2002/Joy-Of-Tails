@@ -13,17 +13,51 @@ router.post("/", verifyToken, async (req, res, next) => {
   }
   try {
     // console.log(req.body);
-    const oldCart = await Cart.find({ userId: req.body.userId });
-    console.log(oldCart[0].products);
+    const oldCart = await Cart.findOne({ userId: req.body.userId });
+    // console.log(oldCart);
     if (oldCart) {
       let cart1 = [];
-      oldCart[0].products.forEach((product, i) => {
-        if (product.productId === req.body.products[0].productId) {
-          product.quantity = req.body.products[0].quantity;
-          console.log(product.productId);
+      // console.log(oldCart);
+      let isUpdated = false;
+      for (let i = 0; i < oldCart.products.length; i++) {
+        const elem = oldCart.products[i];
+        // console.log(elem.productId, req.body.products[0].productId);
+        if (elem.productId == req.body.products[0].productId) {
+          console.log(elem.quantity);
+          if (req.body.products[0].quantity) {
+            elem.quantity = req.body.products[0].quantity;
+          }
+          if (req.body.products[0].img) {
+            elem.img = req.body.products[0].img;
+          }
+          if (req.body.products[0].price) {
+            elem.price = req.body.products[0].price;
+          }
+          if (req.body.products[0].name) {
+            elem.name = req.body.products[0].name;
+          }
+          console.log(elem.quantity);
+          isUpdated = true;
+          // console.log(elem.productId);
         }
-        // console.log(product);
-      });
+      }
+      if (!isUpdated) {
+        await Cart.updateOne(
+          { userId: req.body.userId },
+          { $push: { products: req.body.products[0] } },
+          {
+            new: true,
+          }
+        );
+      }
+      // oldCart[0].products.forEach((p, i) => {
+      //   if (p.productId == req.body.products[0].productId) {
+      //     console.log(p.productId);
+      //     p.quantity = req.body.products[0].quantity;
+      //     // console.log(p.productId);
+      //   }
+      //   // console.log(product);
+      // });
 
       // // oldCart.products.push(req.body.
       // const savedOldCart = await Cart.findOneAndUpdate(
@@ -39,9 +73,10 @@ router.post("/", verifyToken, async (req, res, next) => {
       // }
       // oldCart.products=[...oldCart.products,req.body.products];
       const savedCart = await oldCart.save();
+
       return res.status(200).json(savedCart);
     }
-    const newCart = new Cart(req.body);
+    const newCart = await Cart.create(req.body);
     const savedCart = await newCart.save();
     return res.status(200).json(savedCart);
   } catch (err) {
@@ -51,11 +86,38 @@ router.post("/", verifyToken, async (req, res, next) => {
 // UPDATE A CART
 router.put("/:cartId", verifyToken, async (req, res, next) => {
   try {
-    const cart = await Cart.findByIdAndUpdate(req.params.cartId, req.body, {
-      new: true,
+    const oldItem = await Cart.findById(req.params.cartId);
+    if (!oldItem) {
+      return res.status(404).json({ message: "Cart not found" });
+    }
+    // const cart = await Cart.findByIdAndUpdate(
+    //   req.params.cartId,
+    //   { $push: { products: req.body.products[0] } },
+    //   {
+    //     new: true,
+    //   }
+    // );
+    console.log(oldItem);
+    oldItem.products.forEach((elem, i) => {
+      // if(item.productId==req.body.products[0].productId){
+      if (elem.productId == req.body.products[0].productId) {
+        // console.log(elem.quantity);
+        if (req.body.products[0].quantity) {
+          elem.quantity = req.body.products[0].quantity;
+        }
+        if (req.body.products[0].img) {
+          elem.img = req.body.products[0].img;
+        }
+        if (req.body.products[0].price) {
+          elem.price = req.body.products[0].price;
+        }
+        if (req.body.products[0].name) {
+          elem.name = req.body.products[0].name;
+        }
+      }
     });
-    const savedCart = await cart.save();
-    return res.status(200).json(savedCart);
+    const savedItem = await oldItem.save();
+    return res.status(200).json(savedItem);
   } catch (err) {
     return res.status(500).json(err);
   }
@@ -87,4 +149,4 @@ router.get("/", verifyTokenAndAdmin, async (req, res, next) => {
     return res.status(500).json(err);
   }
 });
-module.exports = router
+module.exports = router;

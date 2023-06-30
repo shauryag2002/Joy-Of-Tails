@@ -5,6 +5,8 @@ import { Home } from "./Home/Home";
 import { Footer } from "./components/Footer/Footer";
 import { Dashboard } from "./Dashboard/Dashboard";
 import { Order } from "./Dashboard/Order";
+import Login from "./components/Login/Login";
+import Cart from "./components/Cart/Cart";
 
 function App() {
   return (
@@ -16,6 +18,9 @@ function App() {
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/order" element={<Order />} />
           <Route path="/create" element={<Order />} />
+          <Route path="/login" element={<Login />} />
+
+          <Route path="/cart" element={<Cart />} />
         </Routes>
       </BrowserRouter>
       <Footer />
