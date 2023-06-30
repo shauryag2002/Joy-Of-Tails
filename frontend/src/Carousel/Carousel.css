@@ -1,0 +1,8 @@
+.carousel {
+  width: 100%;
+  margin-top: 0.2rem;
+  /* height: 350px; */
+}
+.carousel-container img {
+  width: 100%;
+}

@@ -1,0 +1,145 @@
+header {
+  background-color: tomato;
+  font-family: sans-serif;
+}
+
+/* contactDesign */
+
+.contact-wrapper {
+  background-color: #f9e11e;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  height: 50px;
+  font-size: 1.5rem;
+}
+.contact-wrapper .contact {
+  display: flex;
+  gap: 5rem;
+}
+.contact-wrapper .contact .contact-icons {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+}
+
+.contact-wrapper .contact .contact-icons .icons {
+  font-size: 1.8rem;
+}
+
+.contact-wrapper .contact .contact-icons button {
+  background-color: rgb(233, 94, 24);
+  outline: none;
+  border: none;
+  border-radius: 20px;
+  padding: 0.8rem 4rem;
+  color: white;
+  font-size: 1.4rem;
+  font-weight: 600;
+}
+
+/* nav-bar-design */
+
+.nav-bar {
+  width: 95%;
+  margin: auto;
+  display: flex;
+  align-items: center;
+}
+
+/* .left-nav-section */
+
+.nav-bar .left-nav-section {
+  flex: 1;
+}
+.nav-bar .left-nav-section img {
+  width: 65px;
+  height: 65px;
+}
+
+/* .middle-nav-section */
+.nav-bar .middle-nav-section {
+  flex: 3;
+}
+
+.nav-bar .middle-nav-section .nav-bar-search {
+  display: flex;
+  position: relative;
+  justify-content: center;
+  align-items: center;
+  font-size: 1.6rem;
+  font-weight: 700;
+}
+
+.nav-bar .middle-nav-section .nav-bar-search input {
+  width: 70%;
+  outline: none;
+  border: none;
+  height: 35px;
+  padding: 0rem 1rem;
+  border-radius: 5px 0 0 5px;
+}
+.nav-bar .middle-nav-section .nav-bar-search .search {
+  background-color: #89bad0;
+  height: 35px;
+  padding: 0 0.6rem;
+  font-size: 2.6rem;
+  display: flex;
+  align-items: center;
+}
+
+/* .nav-bar .middle-nav-section .nav-bar-links li {
+  position: relative;
+}
+
+.nav-bar .middle-nav-section .nav-bar-links li::before {
+  content: "";
+  width: 0px;
+  height: 3px;
+  background-color: black;
+  transition: all 0.4s linear;
+  position: absolute;
+  bottom: -25%;
+  left: 0;
+} */
+
+/* .nav-bar .middle-nav-section .nav-bar-links li:hover::before {
+  width: 56px;
+}
+
+.nav-bar .middle-nav-section .nav-bar-links li:nth-child(1)::before {
+  width: 50px;
+} */
+
+/* right-section-design */
+
+.nav-bar .right-nav-section {
+  flex: 1;
+}
+
+.nav-bar .right-nav-section .nav-icons {
+  display: flex;
+  font-size: 1.7rem;
+  align-items: center;
+  justify-content: center;
+  gap: 2rem;
+  cursor: pointer;
+}
+.nav-bar .right-nav-section .nav-icons .icons {
+  font-size: 2.5rem;
+}
+.nav-bar .right-nav-section .nav-icons .account .sub-menu-account {
+  display: none;
+}
+
+.nav-bar .right-nav-section .nav-icons .account:hover > .sub-menu-account {
+  display: block;
+  position: absolute;
+  border-radius: 5px;
+  top: 12.5%;
+  right: 1%;
+  width: 10%;
+  background-color: rgb(219, 213, 213);
+  z-index: 9999;
+  padding: 1rem;
+}
