@@ -19,6 +19,7 @@ function App() {
     <>
       <BrowserRouter>
         <Routes>
+          <Route path="/register" element={<Register />} />
           <Route path="/login" element={<Login />} />
           <Route
             path="/*"
@@ -27,11 +28,18 @@ function App() {
                 <Header />
                 <Routes>
                   <Route path="/" element={<Home />} />
-                  <Route path="/dashboard" element={<Dashboard />} />
-                  <Route path="/order" element={<Order />} />
-                  <Route path="/create" element={<Order />} />
+                  <Route path="admin" element={<Privateroute />}>
+                    <Route path="dashboard" element={<Dashboard />} />
+                    <Route path="order" element={<Order />} />
+                  </Route>
+
+                  <Route path="/products" element={<Products />} />
+                  <Route path="/products/:id" element={<Productdetails />} />
+                  <Route path="/edit/:id" element={<Edit />} />
                   <Route path="/cart" element={<Cart />} />
+                  <Route path="*" element={<Error />} />
                 </Routes>
+
                 <Footer />
               </>
             }
