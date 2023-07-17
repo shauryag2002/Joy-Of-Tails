@@ -1,46 +1,73 @@
 const router = require("express").Router();
 const Product = require("../models/ProductModel");
+const multipleUpload = require("../utils/multer");
 const {
   verifyToken,
   verifyTokenAndAuthorization,
   verifyTokenAndAdmin,
 } = require("../utils/verify");
 // CREATE A PRODUCT
-router.post("/", verifyTokenAndAdmin, async (req, res, next) => {
-  if (
-    !req.body.title ||
-    !req.body.desc ||
-    !req.body.img ||
-    !req.body.price ||
-    !req.body.color
-  ) {
-    return res.status(400).send("Please include all fields");
+router.post(
+  "/",
+  verifyTokenAndAdmin,
+  multipleUpload.array("img"),
+  async (req, res, next) => {
+    console.log(req.body);
+    let url = [];
+    const files = req.files;
+    for (const file of files) {
+      const { originalname } = file;
+      url.push(originalname);
+    }
+    const { title, desc, img, price, color } = req.body;
+    if (
+      !req.body.title ||
+      !req.body.desc ||
+      !req.body.price ||
+      !req.body.color
+    ) {
+      return res.status(400).send("Please include all fields");
+    }
+    try {
+      const Create = new Product({
+        title,
+        desc,
+        price,
+        color,
+        img: url,
+      });
+      await Create.save();
+      return res.status(200).json({ Create, success: true });
+    } catch (err) {
+      return res.status(500).json(err);
+    }
   }
-  try {
-    const Create = new Product(req.body);
-    await Create.save();
-    return res.status(200).json(Create);
-  } catch (err) {
-    return res.status(500).json(err);
-  }
-});
+);
 // UPDATE A PRODUCT
-router.put("/:id", verifyTokenAndAdmin, async (req, res, next) => {
-  try {
-    const product = await Product.findByIdAndUpdate(req.params.id, req.body, {
-      new: true,
-    });
-    const updateProduct = await product.save();
-    return res.status(200).json(updateProduct);
-  } catch (err) {
-    return res.status(500).json(err);
+router.put(
+  "/:id",
+  verifyTokenAndAdmin,
+  multipleUpload.array("img"),
+  async (req, res, next) => {
+    console.log(req.body);
+    try {
+      const product = await Product.findByIdAndUpdate(req.params.id, req.body, {
+        new: true,
+      });
+      const updateProduct = await product.save();
+      return res.status(200).json(updateProduct);
+    } catch (err) {
+      return res.status(500).json({ err: err.message });
+    }
   }
-});
+);
 // DELETE A PRODUCT
 router.delete("/:id", verifyTokenAndAdmin, async (req, res, next) => {
   try {
     const productDelete = await Product.findByIdAndDelete(req.params.id);
-    return res.status(200).json({ message: "Product deleted successfully" });
+    return res
+      .status(200)
+      .json({ message: "Product deleted successfully", success: true });
   } catch (err) {
     return res.status(500).json(err);
   }

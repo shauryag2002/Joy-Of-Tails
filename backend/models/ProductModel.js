@@ -8,7 +8,12 @@ const ProductSchema = new mongoose.Schema(
       unique: true,
     },
     desc: { type: String, required: [true, "Enter product description"] },
-    img: [{ type: String, required: [true, "enter product Image"] }],
+    img: [
+      {
+        type: String,
+        required: [true, "enter product Image"],
+      },
+    ],
     categories: { type: String },
     size: { type: String },
     color: { type: String },

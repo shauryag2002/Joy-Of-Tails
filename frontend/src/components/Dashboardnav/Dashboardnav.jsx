@@ -6,11 +6,17 @@ export const Dashboardnav = () => {
     <div>
       <ul>
         <li>
-          <NavLink to="/dashboard">Home</NavLink>
+          <NavLink to="/admin/dashboard">All Products</NavLink>
         </li>
         <li>
-          <NavLink to="/order">Order</NavLink>
+          <NavLink to="/admin/order">Order</NavLink>
         </li>
+        <li>
+          <NavLink to="/admin/order">Users</NavLink>
+        </li>
+        {/* <li>
+          <NavLink to="/admin/order">Order</NavLink>
+        </li> */}
       </ul>
     </div>
   );

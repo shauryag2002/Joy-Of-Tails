@@ -1,17 +1,33 @@
-import React from "react";
-import { animate, motion } from "framer-motion";
+import React, { useEffect, useState } from "react";
+import { useSelector } from "react-redux/es/hooks/useSelector";
+import { motion } from "framer-motion";
 import compLogo from "../../Asset/Logo.svg";
 import { BsHeadphones } from "react-icons/bs";
-import { NavLink } from "react-router-dom";
+import { NavLink, Link, useNavigate } from "react-router-dom";
 import {
   AiFillMail,
   AiOutlineSearch,
   AiOutlineShoppingCart,
   AiOutlineUser,
+  AiOutlineMenu,
+  AiOutlineClose,
 } from "react-icons/ai";
 import "./Header.css";
+import { checkIsAdmin } from "../../Store/AdminSlice/Adminslice";
+import { useDispatch } from "react-redux";
 
 export const Header = () => {
+  const [menu, setMenu] = useState(true);
+  const [ok, setOk] = useState(false);
+  const dispatch = useDispatch();
+  const handleClick = () => {
+    setMenu(!menu);
+  };
+
+  const { isAdmin, isUser } = useSelector((state) => {
+    return state.Admin;
+  });
+
   return (
     <header>
       <div className="contact-wrapper">
@@ -47,7 +63,9 @@ export const Header = () => {
       <nav className="nav-bar">
         <div className="left-nav-section">
           <figure>
-            <img src={compLogo} alt="" />
+            <Link to="/">
+              <img src={compLogo} alt="" />
+            </Link>
           </figure>
         </div>
         <div className="middle-nav-section">
@@ -69,7 +87,14 @@ export const Header = () => {
                 <NavLink to="/">Home</NavLink>
               </li>
               <li>Service</li>
-              <li>Products</li>
+              {isAdmin && (
+                <li>
+                  <NavLink to="/admin/dashboard">Dashboard</NavLink>
+                </li>
+              )}
+              <li>
+                <NavLink to="/products">Products</NavLink>
+              </li>
             </ul>
             <div className="account">
               <AiOutlineUser className="icons" />
@@ -81,12 +106,100 @@ export const Header = () => {
                     gap: "1.2rem",
                   }}
                 >
-                  <li>Login</li>
-                  <li>Register</li>
+                  <li>
+                    <NavLink to="/login">Login</NavLink>
+                  </li>
+                  <li>
+                    <NavLink to="/register">Register</NavLink>
+                  </li>
+                  {isUser && (
+                    <li>
+                      <NavLink
+                        to="/register"
+                        onClick={() => {
+                          localStorage.clear();
+                          dispatch(false);
+                        }}
+                      >
+                        logout
+                      </NavLink>
+                    </li>
+                  )}
                 </ul>
               </div>
             </div>
-            <AiOutlineShoppingCart className="icons" />
+            <NavLink to="/cart">
+              <AiOutlineShoppingCart className="icons" />
+            </NavLink>
+          </div>
+        </div>
+        <div className="menu">
+          <NavLink to="/cart">
+            <AiOutlineShoppingCart />
+          </NavLink>
+          <div>
+            <AiOutlineMenu onClick={handleClick} />
+          </div>
+        </div>
+        <div
+          className={
+            menu ? "right-nav-section-mobile" : "right-nav-section-mobile show"
+          }
+        >
+          <div className="menu">
+            <AiOutlineClose onClick={handleClick} />
+          </div>
+          <div className="nav-icons">
+            <ul
+              style={{
+                display: "flex",
+                gap: "1.2rem",
+                flexDirection: "column",
+                justifyContent: "center",
+              }}
+            >
+              <li
+                onClick={() => {
+                  setMenu(true);
+                }}
+              >
+                <NavLink to="/">Home</NavLink>
+              </li>
+              <li
+                onClick={() => {
+                  setMenu(true);
+                }}
+              >
+                Service
+              </li>
+              <li
+                onClick={() => {
+                  setMenu(true);
+                }}
+              >
+                <NavLink to="/products">Products</NavLink>
+              </li>
+              <li>
+                <NavLink
+                  to="/login"
+                  onClick={() => {
+                    setMenu(true);
+                  }}
+                >
+                  Login
+                </NavLink>
+              </li>
+              <li>
+                <NavLink
+                  to="/register"
+                  onClick={() => {
+                    setMenu(true);
+                  }}
+                >
+                  Register
+                </NavLink>
+              </li>
+            </ul>
           </div>
         </div>
       </nav>

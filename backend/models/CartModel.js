@@ -9,7 +9,7 @@ const CartSchema = new mongoose.Schema(
           type: String,
         },
         img: {
-          type: String,
+          type: Array,
         },
         name: {
           type: String,

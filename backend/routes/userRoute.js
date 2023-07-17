@@ -159,4 +159,12 @@ router.route("/password/reset/:token").put(async (req, res, next) => {
   return res.status(200).json({ ...user._doc, accessToken });
 });
 
+router.route("/isadmin").get(async (req, res) => {
+  const user = await User.findById(req.headers.id);
+  if (!user) {
+    return res.json({ success: false, message: "user not found" });
+  }
+  return res.json({ success: true, user });
+});
+
 module.exports = router;

@@ -3,6 +3,7 @@
   /* background: url("../../images/login\ image.png"); */
   height: 100%;
   width: 48vw;
+  margin-top: 2rem;
 }
 .loginImage {
   /* position: absolute; */
@@ -18,10 +19,7 @@
   width: 100%;
 }
 .loginForm {
-  /* position: relative; */
-  /* left: 711px; */
-  /* top: 32px;
-  left: 24%; */
+  width: 36%;
 }
 .topWrapper {
   display: flex;
@@ -219,5 +217,8 @@
   }
   .welcomeText {
     width: 100%;
+  }
+  .loginButton div {
+    padding: 15px 55px;
   }
 }

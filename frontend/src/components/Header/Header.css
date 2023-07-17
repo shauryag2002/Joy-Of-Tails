@@ -3,6 +3,10 @@ header {
   font-family: sans-serif;
 }
 
+.active {
+  border-bottom: 2px solid rgb(8, 12, 24);
+}
+
 /* contactDesign */
 
 .contact-wrapper {
@@ -13,10 +17,12 @@ header {
   height: 50px;
   font-size: 1.5rem;
 }
+
 .contact-wrapper .contact {
   display: flex;
   gap: 5rem;
 }
+
 .contact-wrapper .contact .contact-icons {
   display: flex;
   align-items: center;
@@ -45,6 +51,7 @@ header {
   margin: auto;
   display: flex;
   align-items: center;
+  font-family: sans-serif;
 }
 
 /* .left-nav-section */
@@ -75,43 +82,35 @@ header {
   width: 70%;
   outline: none;
   border: none;
-  height: 35px;
+  height: 38px;
   padding: 0rem 1rem;
   border-radius: 5px 0 0 5px;
 }
 .nav-bar .middle-nav-section .nav-bar-search .search {
   background-color: #89bad0;
-  height: 35px;
+  height: 38px;
   padding: 0 0.6rem;
   font-size: 2.6rem;
   display: flex;
   align-items: center;
 }
-
-/* .nav-bar .middle-nav-section .nav-bar-links li {
-  position: relative;
-}
-
-.nav-bar .middle-nav-section .nav-bar-links li::before {
-  content: "";
-  width: 0px;
-  height: 3px;
-  background-color: black;
-  transition: all 0.4s linear;
+.nav-bar .right-nav-section-mobile {
+  background-color: rgb(242, 244, 242);
+  transform: translateX(100%);
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+  align-items: center;
+  justify-content: center;
+  font-size: 2rem;
   position: absolute;
-  bottom: -25%;
-  left: 0;
-} */
-
-/* .nav-bar .middle-nav-section .nav-bar-links li:hover::before {
-  width: 56px;
+  right: 0%;
+  top: 0%;
+  width: 100%;
+  height: 100vh;
+  transition: all 0.3s linear;
+  z-index: 99999;
 }
-
-.nav-bar .middle-nav-section .nav-bar-links li:nth-child(1)::before {
-  width: 50px;
-} */
-
-/* right-section-design */
 
 .nav-bar .right-nav-section {
   flex: 1;
@@ -119,7 +118,8 @@ header {
 
 .nav-bar .right-nav-section .nav-icons {
   display: flex;
-  font-size: 1.7rem;
+  font-size: 1.6rem;
+  font-weight: 500;
   align-items: center;
   justify-content: center;
   gap: 2rem;
@@ -138,8 +138,111 @@ header {
   border-radius: 5px;
   top: 12.5%;
   right: 1%;
-  width: 10%;
+  width: 15%;
+  height: 15vmax;
   background-color: rgb(219, 213, 213);
   z-index: 9999;
   padding: 1rem;
+}
+.nav-bar .menu {
+  display: none;
+  cursor: pointer;
+}
+
+@media only screen and (max-width: 1040px) {
+  .contact-wrapper {
+    background-color: #f9e11e;
+    display: flex;
+    flex-direction: column;
+    font-size: 1.3rem;
+    height: 80px;
+  }
+}
+
+@media only screen and (max-width: 768px) {
+  ::placeholder {
+    font-size: 1.1rem;
+  }
+  .nav-bar .left-nav-section img {
+    width: 45px;
+    height: 45px;
+  }
+  .nav-bar .right-nav-section {
+    display: none;
+  }
+  .contact-wrapper {
+    background-color: #f9e11e;
+    display: flex;
+    gap: 0;
+    flex-direction: column;
+    font-size: 1.3rem;
+    height: 125px;
+  }
+  .contact-wrapper .contact {
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+  }
+  .contact-wrapper .contact .contact-icons {
+    display: flex;
+    align-items: center;
+  }
+
+  .contact-wrapper .contact .contact-icons button {
+    background-color: rgb(233, 94, 24);
+    outline: none;
+    border: none;
+    border-radius: 20px;
+    color: white;
+    font-size: 1rem;
+    font-weight: 600;
+  }
+  .nav-bar .middle-nav-section .nav-bar-search input {
+    width: 75%;
+    height: 32px;
+  }
+  .nav-bar .middle-nav-section .nav-bar-search .search {
+    height: 32px;
+  }
+
+  .nav-bar .middle-nav-section .nav-bar-search {
+    font-weight: 700;
+  }
+  .nav-bar {
+    width: 95%;
+    margin: auto;
+    display: flex;
+    /* flex-direction: column; */
+    align-items: center;
+  }
+  .nav-bar .left-nav-section {
+    flex: 0;
+  }
+  .nav-bar .left-nav-section .middle-nav-section {
+    flex: 2;
+  }
+  .nav-bar .left-nav-section .right-nav-section {
+    flex: 1;
+    display: flex;
+  }
+  .nav-bar .menu {
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+    font-size: 2.4rem;
+  }
+  .nav-bar .show {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2rem;
+    justify-content: center;
+    width: 100%;
+    height: 100vh;
+    position: fixed;
+    top: 0;
+    left: 0;
+    transition: all 0.3s linear;
+    transform: translateX(0%);
+  }
 }

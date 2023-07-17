@@ -1,27 +1,51 @@
 import React, { useState } from "react";
 import DogLogo from "../../images/dogLogoCropped.jpg";
 import GoogleLogo from "../../images/Google Logo.png";
-
-import { Link } from "react-router-dom";
-import axios from "axios";
+import { Link, useNavigate } from "react-router-dom";
 import Cookies from "js-cookie";
 import "./Login.css";
+import { useDispatch } from "react-redux";
+import { checkIsAdmin, checkIsUser } from "../../Store/AdminSlice/Adminslice";
 const Login = () => {
   const [user, setUser] = useState({ username: "", password: "" });
   const [error, setError] = useState("");
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
   const handleLogin = async () => {
     try {
-      const res = await axios.post("/api/auth/login", user);
-      if (res.data.error) {
+      const res = await fetch("/api/auth/login", {
+        method: "post",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          username: user.username,
+          password: user.password,
+        }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        if (data.isAdmin) {
+          dispatch(checkIsAdmin(data.isAdmin));
+          navigate("/admin/dashboard");
+        } else {
+          dispatch(checkIsAdmin(false));
+          navigate("/");
+        }
+      } else {
+        alert(data.message);
+      }
+      if (data.error) {
         setError(res.data.error);
       }
-      const userInfo = await res.data;
-      console.log(userInfo);
+      const userInfo = await data;
       localStorage.setItem("token", userInfo.accessToken);
       localStorage.setItem("id", userInfo._id);
+      localStorage.setItem("isAdmin", userInfo.isAdmin);
       Cookies.set("token", userInfo.accessToken, { expires: 5 });
+      dispatch(checkIsUser(localStorage.getItem("token")));
     } catch (err) {
-      console.log(err);
+      console.log(err.response);
     }
   };
   return (

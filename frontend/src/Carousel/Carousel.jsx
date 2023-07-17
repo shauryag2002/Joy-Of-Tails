@@ -12,7 +12,6 @@ export const MyCarousel = ({
   dots,
   countslide,
 }) => {
-  console.log(desktop);
   const responsive = {
     superLargeDesktop: {
       breakpoint: { max: 4000, min: 3000 },

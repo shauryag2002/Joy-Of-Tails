@@ -1,3 +1,5 @@
+@import url("https://fonts.googleapis.com/css2?family=Fredoka:wght@600&display=swap");
+
 .category-section {
   width: 60%;
   margin: auto;
@@ -32,33 +34,405 @@
   position: absolute;
   top: 105%;
   left: -140%;
-  /* transform: translate(0 -50%); */
-  /* height: 250px; */
   background-color: rgb(232, 236, 232);
   z-index: 99999;
   border-radius: 10px;
 }
 
-.dog-product {
+.food-section {
+  width: 90%;
+  margin: auto;
   display: flex;
-  margin-top: 2rem;
+  align-items: center;
+  justify-content: space-evenly;
+  margin-top: 6rem;
 }
-.dog-product .left {
-  width: 20%;
+.food-section .dog-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 1.8rem;
 }
-.dog-product .left h2 {
-  font-size: 3.5rem;
-  padding: 2rem 0;
+.food-section .cat-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 1.8rem;
+}
+.food-section h2 {
+  font-size: 6rem;
+  text-align: center;
+}
+.food-section figure {
+  width: 350px;
+  background: url("https://pettie.wpengine.com/wp-content/uploads/2023/05/Pty-Dog-Image-1-overlay.png");
+  border-radius: 50%;
+  padding: 3rem;
+}
+.food-section .cat {
+  background-color: #f4db67;
+  border-radius: 120px 0 0 120px;
+}
+.food-section .dog {
+  background-color: #81cbca;
+  border-radius: 0 120px 120px 0;
+}
+.food-section img {
+  width: 100%;
+}
+.service-section {
+  width: 70%;
+  margin: auto;
+  display: grid;
+  gap: 8rem;
+  grid-template-columns: 1fr 1fr;
+  margin-top: 8rem;
+}
+.service-section .service-content {
+  display: flex;
+  flex-direction: column;
+  /* background-color: red; */
+  gap: 3rem;
+}
+.service-section .service-content .servicelist {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6rem;
+}
+.service-section h2 {
+  font-size: 5rem;
+  font-weight: 00;
+  font-family: "Fredoka";
+}
+.service-section h3 {
+  font-size: 2rem;
+  font-weight: 900;
+}
+.service-section p {
+  font-size: 1.8rem;
+  font-weight: 100;
+  line-height: 3.5rem;
+}
+.service-section figure {
+  margin: auto;
+  width: 450px;
+  text-align: center;
+}
+.service-section img {
+  width: 100%;
+}
+.contact-wrappers {
+  display: flex;
+  justify-content: space-between;
+}
+.common-contact {
+  display: flex;
+  align-items: center;
+  gap: 2.5rem;
+}
+.common-contact p {
+  font-size: 1.6rem;
+  letter-spacing: 0.2rem;
+}
+.common-contact a {
+  font-size: 1.4rem;
+  font-weight: 800;
+  letter-spacing: 0.2rem;
+}
+.icon-wrapper {
+  display: flex;
+  justify-content: center;
+  gap: 8rem;
+  margin-top: 5rem;
+}
+.icon-wrapper .items {
+  width: 300px;
+  height: 300px;
+  border-radius: 50%;
+  background-color: rgb(154, 157, 72);
+  background-image: url("https://images.unsplash.com/photo-1537151625747-768eb6cf92b2?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTB8fGRvZ3xlbnwwfHwwfHx8MA%3D%3D&auto=format&fit=crop&w=500&q=60");
+  background-repeat: no-repeat;
+  background-size: 100%;
 }
 
-.cat-product {
+.icon-wrapper .cat {
+  background-image: url("https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8Y2F0fGVufDB8fDB8fHww&auto=format&fit=crop&w=500&q=60");
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+.product {
+  width: 70%;
+  margin: auto;
+  display: grid;
+  gap: 2rem;
+  margin-top: 5rem;
+  grid-template-columns: 1fr 1fr 1fr;
+}
+.product .product-items {
+  width: 340px;
+  height: 420px;
+  border-radius: 20px;
   display: flex;
-  margin-top: 2rem;
+  flex-direction: column;
+  align-items: center;
+  border: 2px solid rgb(243, 241, 241);
+  box-shadow: 0px 1px 2px rgb(227, 224, 224);
+  cursor: pointer;
+  padding: 1rem 0;
+  overflow: hidden;
 }
-.cat-product .left {
-  width: 20%;
+
+.product .product-items:hover {
+  transform: translateY(-2%);
+  transition: all 0.2s linear;
+  background-color: #ffc312;
 }
-.cat-product .left h2 {
-  font-size: 3.5rem;
+.product .product-items:hover > button {
+  transform: translateY(-2%);
+  transition: all 0.2s linear;
+  background-color: #ff9933;
+  color: white;
+}
+
+.product .product-items figure {
+  width: 80%;
+  margin: auto;
+}
+.product .product-items figure:hover {
+  transform: scale(1.2);
+  transition: all 0.2s linear;
+}
+.product .product-items button {
+  background-color: orange;
+  border-radius: 50px;
+  outline: none;
+  padding: 0.8rem 4rem;
+  border: none;
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+.sleeping-dog {
+  width: 100vw;
+  height: 70vh;
+  background-image: url("https://images.unsplash.com/photo-1546444575-95793abb97dd?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80");
+  background-repeat: no-repeat;
+  background-size: cover;
+  margin-top: 5rem;
+  background-attachment: fixed;
+}
+
+.our-service h2 {
+  font-size: 5rem;
+  margin-top: 8rem;
+  text-align: center;
+}
+.ourservice-section {
+  width: 80%;
+  margin: auto;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  row-gap: 15rem;
+  column-gap: 5rem;
+  margin-top: 10rem;
+}
+.ourservice-section .service-items {
+  width: 500px;
+  /* height: 550px; */
   padding: 2rem 0;
+  margin: auto;
+  border-radius: 10px;
+  border: 2px solid rgb(244, 241, 241);
+  box-shadow: 0px 0px 2px rgb(197, 196, 196);
+}
+
+.ourservice-section figure {
+  width: 60%;
+  overflow: hidden;
+  border-radius: 25px;
+  border-radius: 15px;
+  margin: auto;
+  margin-top: 5rem;
+  height: 310px;
+}
+.ourservice-section figure img {
+  width: 100%;
+  height: 100%;
+  border-radius: inherit;
+  transform: scale(1.2);
+}
+.ourservice-section figure img:hover {
+  transition: all 0.2s linear;
+  transform: scale(1);
+}
+.customer-wrapper {
+  width: 70%;
+  margin: auto;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+
+.discount {
+  width: 65%;
+  height: 250px;
+  margin: auto;
+  margin-top: 5rem;
+  background-color: #feec1d;
+  border-radius: 15px;
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+}
+.discount .discount-item {
+  width: 180px;
+  height: 180px;
+  padding: 0 1rem;
+  background-color: #ff6b35;
+  border-radius: 50%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: 3.4rem;
+  color: white;
+}
+.discount .discount-item h3 span {
+  color: #ffcd08;
+  font-weight: 800;
+}
+.discount h2 {
+  font-size: 4rem;
+  width: 60%;
+}
+.discount button {
+  background-color: #ff6b35;
+  border: none;
+  padding: 1rem 5rem;
+  border-radius: 40px;
+  margin-top: 2rem;
+  color: white;
+  font-size: 1.7rem;
+  font-weight: 900;
+  cursor: pointer;
+}
+
+@media only screen and (max-width: 1170px) {
+  .ourservice-section {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media only screen and (max-width: 1096px) {
+  .service-section {
+    display: grid;
+    grid-template-columns: 1fr;
+  }
+  .service-section figure {
+    width: 310px;
+  }
+
+  .product {
+    grid-template-columns: 1fr 1fr;
+  }
+  .product .product-items {
+    width: 280px;
+    margin: auto;
+  }
+}
+
+@media only screen and (max-width: 868px) {
+  .dog-product .left {
+    display: none;
+  }
+  .cat-product .left {
+    display: none;
+  }
+}
+
+@media only screen and (max-width: 768px) {
+  .food-section {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+  }
+  .food-section h2 {
+    font-size: 3rem;
+  }
+  .food-section figure {
+    width: 270px;
+    background: url("https://pettie.wpengine.com/wp-content/uploads/2023/05/Pty-Dog-Image-1-overlay.png");
+    border-radius: 50%;
+    padding: 3rem;
+  }
+  .dog-product .left {
+    display: none;
+  }
+  .cat-product .left {
+    display: none;
+  }
+  .service-section .service-content .servicelist {
+    grid-template-columns: 1fr;
+    gap: 4rem;
+  }
+  .contact-wrappers {
+    flex-direction: column;
+    gap: 4rem;
+  }
+  .icon-wrapper {
+    flex-direction: column;
+    align-items: center;
+    gap: 4rem;
+  }
+  .icon-wrapper .items {
+    width: 250px;
+    height: 250px;
+  }
+  .product {
+    grid-template-columns: 1fr;
+  }
+  .ourservice-section {
+    gap: 2.5rem;
+  }
+  .ourservice-section h4 {
+    font-size: 1rem;
+  }
+  .ourservice-section .service-items {
+    width: auto;
+  }
+  .service-section h2 {
+    font-size: 3.5rem;
+  }
+  .discount {
+    width: 100%;
+    display: flex;
+    /* justify-content: center; */
+    gap: 2rem;
+  }
+  .discount h2 {
+    font-size: 2.5rem;
+  }
+  .discount .discount-item {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+  }
+  .discount .discount-item h3 span {
+    color: #ffcd08;
+    font-size: 3rem;
+    font-weight: 800;
+  }
+  .discount button {
+    padding: 0.5rem 2rem;
+    margin-top: 2rem;
+    font-size: 1.2rem;
+  }
+  .discount-content {
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+  }
+  .our-service h2 {
+    margin-top: 6rem;
+    font-size: 3rem;
+    text-align: center;
+  }
 }

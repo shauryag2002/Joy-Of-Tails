@@ -8,12 +8,14 @@ const {
 const router = require("express").Router();
 // CREATE A CART
 router.post("/", verifyToken, async (req, res, next) => {
+  // console.log(req.body);
   if (!req.body.userId) {
     return res.status(400).send("Please include all fields");
   }
   try {
     // console.log(req.body);
     const oldCart = await Cart.findOne({ userId: req.body.userId });
+    console.log(oldCart);
     // console.log(oldCart);
     if (oldCart) {
       let cart1 = [];
@@ -21,6 +23,7 @@ router.post("/", verifyToken, async (req, res, next) => {
       let isUpdated = false;
       for (let i = 0; i < oldCart.products.length; i++) {
         const elem = oldCart.products[i];
+        // console.log(elm);
         // console.log(elem.productId, req.body.products[0].productId);
         if (elem.productId == req.body.products[0].productId) {
           console.log(elem.quantity);
@@ -36,7 +39,7 @@ router.post("/", verifyToken, async (req, res, next) => {
           if (req.body.products[0].name) {
             elem.name = req.body.products[0].name;
           }
-          console.log(elem.quantity);
+          // console.log(elem.quantity);
           isUpdated = true;
           // console.log(elem.productId);
         }
@@ -133,6 +136,7 @@ router.delete("/:cartId", verifyToken, async (req, res, next) => {
 });
 // GET USER'S CART
 router.get("/find/:id", verifyTokenAndAuthorization, async (req, res, next) => {
+  console.log(req.params);
   try {
     const cart = await Cart.find({ userId: req.params.id });
     return res.status(200).json(cart);

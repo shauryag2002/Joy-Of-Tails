@@ -1,7 +1,9 @@
 const express = require("express");
+const path = require("path");
 const cors = require("cors");
 const mongoose = require("mongoose");
 const dotenv = require("dotenv");
+const cloudinary = require("cloudinary");
 const authRoute = require("./routes/auth");
 const userRoute = require("./routes/userRoute");
 const productRoute = require("./routes/productRoute");
@@ -11,7 +13,10 @@ const stripeRoute = require("./routes/stripe");
 const categoryRoute = require("./routes/categoryRoute");
 const featureCatRoute = require("./routes/featuredCatRoute");
 const app = express();
+
+app.use(express.static("public"));
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 app.use(cors());
 dotenv.config();
 mongoose
@@ -25,9 +30,7 @@ mongoose
   .catch((err) => {
     console.error("Error connecting to MongoDB:", err.message);
   });
-app.get("/", (req, res) => {
-  res.send("hello world");
-});
+
 app.use("/api/auth", authRoute);
 app.use("/api/featured", featureCatRoute);
 app.use("/api/user", userRoute);
@@ -36,6 +39,7 @@ app.use("/api/order", orderRoute);
 app.use("/api/cart", cartRoute);
 app.use("/api/category", categoryRoute);
 app.use("/api/checkout", stripeRoute);
+
 app.listen(process.env.PORT, () => {
   console.log(
     `listening on port ${process.env.PORT}(http://localhost:${process.env.PORT})`

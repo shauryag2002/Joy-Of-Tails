@@ -12,8 +12,9 @@ const Cart = () => {
       products: [
         {
           name: "product 1",
-          image:
+          img: [
             "https://cdn.shopify.com/s/files/1/0565/8021/0861/files/Frame_10976_1600x.png?v=1685180179",
+          ],
           quantity: 100,
           price: 6000,
         },
@@ -23,18 +24,19 @@ const Cart = () => {
   useEffect(() => {
     const CartItemFun = async () => {
       const id = localStorage.getItem("id");
+      console.log(id);
       const jwtToken = localStorage.getItem("token");
-      const res = await axios.get("/api/cart/find/" + id, {
+      const res = await axios.get(`http://localhost:4000/api/cart/find/${id}`, {
         headers: {
-          token: "Bearer " + jwtToken,
+          token: jwtToken,
           "Content-Type": "application/json",
         },
       });
+      console.log(res);
       setCartItems(res.data);
     };
     CartItemFun();
   }, []);
-  console.log(cartItems[0].products);
   return (
     <Fragment>
       {cartItems.length === 0 ? (
