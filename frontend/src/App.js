@@ -25,11 +25,13 @@ function App() {
             element={
               <>
                 <Header />
-                <Route path="/" element={<Home />} />
-                <Route path="/dashboard" element={<Dashboard />} />
-                <Route path="/order" element={<Order />} />
-                <Route path="/create" element={<Order />} />
-                <Route path="/cart" element={<Cart />} />
+                <Routes>
+                  <Route path="/" element={<Home />} />
+                  <Route path="/dashboard" element={<Dashboard />} />
+                  <Route path="/order" element={<Order />} />
+                  <Route path="/create" element={<Order />} />
+                  <Route path="/cart" element={<Cart />} />
+                </Routes>
                 <Footer />
               </>
             }
