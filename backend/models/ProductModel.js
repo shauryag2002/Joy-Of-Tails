@@ -2,6 +2,9 @@ const mongoose = require("mongoose");
 
 const ProductSchema = new mongoose.Schema(
   {
+    brand: {
+      type: String,
+    },
     title: {
       type: String,
       required: [true, "Enter product title"],
@@ -28,9 +31,24 @@ const ProductSchema = new mongoose.Schema(
       maxLength: [4, "Stock cannot exceed 4 characters"],
       default: 1,
     },
+    gramPerQuantity: [
+      {
+        quantity: String,
+        price: Number,
+        gram: String,
+      },
+    ],
     numOfReviews: {
       type: Number,
       default: 0,
+    },
+    animalType: {
+      type: String,
+      required: [true, "Please Enter product animal type"],
+    },
+    foodType: {
+      type: String,
+      default: "veg",
     },
     reviews: [
       {

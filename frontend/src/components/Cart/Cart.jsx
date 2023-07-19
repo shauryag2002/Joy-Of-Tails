@@ -6,7 +6,7 @@ import { Link } from "react-router-dom";
 import CartItemCard from "./CartItemCard";
 import axios from "axios";
 const Cart = () => {
-  const [item, setItem] = useState({});
+  const [ok, setOk] = useState(false);
   const [cartItems, setCartItems] = useState([
     {
       products: [
@@ -15,12 +15,49 @@ const Cart = () => {
           img: [
             "https://cdn.shopify.com/s/files/1/0565/8021/0861/files/Frame_10976_1600x.png?v=1685180179",
           ],
-          quantity: 100,
+          quantity: 1,
           price: 6000,
         },
       ],
     },
   ]);
+  const incQuantity = async (cartId, quan, productId) => {
+    const jwtToken = localStorage.getItem("token");
+    const res = await fetch(`http://localhost:4000/api/cart/${cartId}`, {
+      method: "PUT",
+      headers: {
+        token: jwtToken,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        userId: localStorage.getItem("id"),
+        products: [{ productId: productId, quantity: quan + 1 }],
+      }),
+    });
+    const data = await res.json();
+    // setCartItems(data);
+    setOk(true);
+  };
+  const descQuantity = async (cartId, quan, productId) => {
+    const jwtToken = localStorage.getItem("token");
+    if (quan >= 2) {
+      const res = await fetch(`http://localhost:4000/api/cart/${cartId}`, {
+        method: "PUT",
+        headers: {
+          token: jwtToken,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          userId: localStorage.getItem("id"),
+          products: [{ productId: productId, quantity: quan - 1 }],
+        }),
+      });
+      const data = await res.json();
+      setOk(true);
+      // setCartItems(data);
+    }
+  };
+  const [count, setCount] = useState(0);
   useEffect(() => {
     const CartItemFun = async () => {
       const id = localStorage.getItem("id");
@@ -37,14 +74,20 @@ const Cart = () => {
     };
     CartItemFun();
   }, []);
+
+  if (ok) {
+    return <Cart />;
+  }
   return (
     <Fragment>
       {cartItems.length === 0 ? (
         <div className="emptyCart">
-          <MdRemoveShoppingCart />
+          <MdRemoveShoppingCart className="font" />
 
-          <div>No Product in Your Cart</div>
-          <Link to="/">View Products</Link>
+          <div className="font">No Product in Your Cart</div>
+          <Link to="/" className="font">
+            View Products
+          </Link>
         </div>
       ) : (
         <Fragment>
@@ -56,7 +99,7 @@ const Cart = () => {
             </div>
 
             {cartItems &&
-              cartItems[0].products.map((item) => (
+              cartItems[0].products?.map((item) => (
                 <div className="cartContainer" key={item._id}>
                   <CartItemCard
                     item={item}
@@ -64,21 +107,33 @@ const Cart = () => {
                   />
                   <div className="cartInput">
                     <button
-                    //   onClick={() =>
-                    // decreaseQuantity(item.product, item.quantity)
-                    //   }
+                      onClick={() => {
+                        // decreaseQuantity(item.product, item.quantity)
+                        descQuantity(
+                          cartItems[0]._id,
+                          item.quantity,
+                          item.productId
+                        );
+                        setCount(count + 1);
+                      }}
                     >
                       -
                     </button>
                     <input type="number" value={item.quantity} readOnly />
                     <button
-                    //   onClick={() =>
-                    //     increaseQuantity(
-                    //       item.product,
-                    //       item.quantity,
-                    //       item.stock
-                    //     )
-                    //   }
+                      onClick={() => {
+                        //     increaseQuantity(
+                        //       item.product,
+                        //       item.quantity,
+                        //       item.stock
+                        incQuantity(
+                          cartItems[0]._id,
+                          item.quantity,
+                          item.productId
+                        );
+                        setCount(count + 1);
+                        //     )
+                      }}
                     >
                       +
                     </button>
@@ -99,13 +154,13 @@ const Cart = () => {
                 )}`}</p>
               </div>
               <div></div>
-              <div className="checkOutBtn">
+              <Link to={"/shipping"} className="checkOutBtn">
                 <button
                 // onClick={checkoutHandler}
                 >
                   Check Out
                 </button>
-              </div>
+              </Link>
             </div>
           </div>
         </Fragment>
