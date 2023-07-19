@@ -5,7 +5,6 @@ import { useSelector, useDispatch } from "react-redux";
 import { Rating } from "react-simple-star-rating";
 import { Link } from "react-router-dom";
 import Cookies from "js-cookie";
-<<<<<<< HEAD
 import ReactPaginate from "react-paginate";
 import { AddShipping } from "../Store/ShipingSlice/ShipingSlice";
 
@@ -14,6 +13,12 @@ export const Products = () => {
   const [page, setPage] = useState("");
   const [pageCount, setPageCount] = useState("");
   const [pagenation, setPagination] = useState([]);
+  const [products1, setProducts1] = useState();
+  const [categories, setCategories] = useState([]);
+  const [ratings, setRatings] = useState(1);
+  const [min, setMin] = useState(0);
+  const [max, setMax] = useState(10000000);
+  const [filter, setFilter] = useState([]);
 
   const dispatch = useDispatch();
 
@@ -21,7 +26,6 @@ export const Products = () => {
     console.log(state);
     return state.Shipping;
   });
-  console.log(data);
 
   const getAllProducts = async () => {
     const { data } = await axios.get(`http://localhost:4000/api/product`);
@@ -32,6 +36,8 @@ export const Products = () => {
       paginationPage.push(i);
     }
     setPagination([...paginationPage]);
+
+    setProducts1(data.product);
   };
 
   const changePage = async ({ selected }) => {
@@ -39,24 +45,8 @@ export const Products = () => {
       `http://localhost:4000/api/product?page=${selected + 1}&limit=${6}`
     );
     setAllProducts(data.product);
-=======
-import { async } from "q";
-import { fontSize } from "@mui/system";
-
-export const Products = () => {
-  const [products, setAllProducts] = useState([]);
-  const [products1, setProducts1] = useState([]);
-  const [categories, setCategories] = useState([]);
-  const [ratings, setRatings] = useState(1);
-  const [min, setMin] = useState(0);
-  const [max, setMax] = useState(10000000);
-  const [filter, setFilter] = useState([]);
-  const getAllProducts = async () => {
-    const { data } = await axios.get("http://localhost:4000/api/product");
-    setAllProducts(data);
-    setProducts1(data);
->>>>>>> 18623befe98dc54a82f6c9e5a24e7cca3735c955
   };
+  // export const Products = () => {
 
   const addCart = async (product) => {
     const { data } = await axios.post(
@@ -89,7 +79,7 @@ export const Products = () => {
     setCategories(data);
   };
   const filteredProducts = () => {
-    const filter1 = products1.filter((product) => {
+    const filter1 = products.filter((product) => {
       return product.ratings >= ratings;
     });
     setAllProducts(filter1);
@@ -105,14 +95,14 @@ export const Products = () => {
     });
     setAllProducts(filter1);
   };
-  useEffect(() => {
-    filteredProducts();
-  }, [ratings]);
+  // useEffect(() => {
+
+  // }, [ratings]);
   useEffect(() => {
     getAllProducts();
     getCategories();
-  }, []);
-  console.log(products);
+    filteredProducts();
+  }, [ratings]);
   return (
     <>
       <div className="product-wrapper">

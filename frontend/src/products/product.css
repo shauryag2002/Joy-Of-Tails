@@ -85,7 +85,6 @@
   font-size: 1.5rem;
   font-weight: 700;
 }
-<<<<<<< HEAD
 .pagination {
   display: flex;
   gap: 1.4rem;
@@ -102,7 +101,6 @@
   background-color: tomato;
 }
 
-=======
 .ratings-input {
   width: 95%;
 }
@@ -115,7 +113,6 @@
 .top-space {
   margin-top: 10px;
 }
->>>>>>> 18623befe98dc54a82f6c9e5a24e7cca3735c955
 @media only screen and (max-width: 1244px) {
   .product-wrapper {
     display: flex;
