@@ -12,6 +12,7 @@ const cartRoute = require("./routes/cartRoute");
 const stripeRoute = require("./routes/stripe");
 const categoryRoute = require("./routes/categoryRoute");
 const featureCatRoute = require("./routes/featuredCatRoute");
+const Razorpay = require("razorpay");
 const app = express();
 
 app.use(express.static("public"));
@@ -30,7 +31,7 @@ mongoose
   .catch((err) => {
     console.error("Error connecting to MongoDB:", err.message);
   });
-
+// export const instance = new Razorpay({});
 app.use("/api/auth", authRoute);
 app.use("/api/featured", featureCatRoute);
 app.use("/api/user", userRoute);

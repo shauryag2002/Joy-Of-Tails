@@ -4,8 +4,6 @@ import "./product.css";
 import { Rating } from "react-simple-star-rating";
 import { Link } from "react-router-dom";
 import Cookies from "js-cookie";
-import { async } from "q";
-import { fontSize } from "@mui/system";
 
 export const Products = () => {
   const [products, setAllProducts] = useState([]);
