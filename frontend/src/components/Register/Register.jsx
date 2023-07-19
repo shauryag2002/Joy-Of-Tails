@@ -59,8 +59,8 @@ const Register = () => {
               <div className="signup">
                 <div className="signupText">
                   No Account ?
-                  <Link to={"/register"} className="linkColorNone">
-                    Sign up
+                  <Link to={"/login"} className="linkColorNone">
+                    Sign in
                   </Link>
                 </div>
               </div>

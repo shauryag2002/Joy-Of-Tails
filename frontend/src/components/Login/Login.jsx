@@ -43,7 +43,7 @@ const Login = () => {
       localStorage.setItem("id", userInfo._id);
       localStorage.setItem("isAdmin", userInfo.isAdmin);
       Cookies.set("token", userInfo.accessToken, { expires: 5 });
-      dispatch(checkIsUser(localStorage.getItem("token")));
+      dispatch(checkIsUser(true));
     } catch (err) {
       console.log(err.response);
     }

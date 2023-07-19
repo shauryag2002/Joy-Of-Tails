@@ -77,7 +77,7 @@ router.post("/", verifyToken, async (req, res, next) => {
       // oldCart.products=[...oldCart.products,req.body.products];
       const savedCart = await oldCart.save();
 
-      return res.status(200).json(savedCart);
+      return res.status(200).json({ success: true, savedCart });
     }
     const newCart = await Cart.create(req.body);
     const savedCart = await newCart.save();
