@@ -4,12 +4,21 @@ import "./product.css";
 import { Rating } from "react-simple-star-rating";
 import { Link } from "react-router-dom";
 import Cookies from "js-cookie";
+import { async } from "q";
+import { fontSize } from "@mui/system";
 
 export const Products = () => {
-  const [products, setAllProducts] = useState();
+  const [products, setAllProducts] = useState([]);
+  const [products1, setProducts1] = useState([]);
+  const [categories, setCategories] = useState([]);
+  const [ratings, setRatings] = useState(1);
+  const [min, setMin] = useState(0);
+  const [max, setMax] = useState(10000000);
+  const [filter, setFilter] = useState([]);
   const getAllProducts = async () => {
     const { data } = await axios.get("http://localhost:4000/api/product");
     setAllProducts(data);
+    setProducts1(data);
   };
 
   const addCart = async (product) => {
@@ -35,16 +44,95 @@ export const Products = () => {
     );
     console.log(data);
   };
-
+  const getCategories = async function () {
+    const { data } = await axios.get("http://localhost:4000/api/category/");
+    console.log(data);
+    setCategories(data);
+  };
+  const filteredProducts = () => {
+    const filter1 = products1.filter((product) => {
+      return product.ratings >= ratings;
+    });
+    setAllProducts(filter1);
+  };
+  const rangeFilter = () => {
+    const filter1 = products1.filter((product) => {
+      if (max == 0 && min == 0) return product;
+      return (
+        product.price >= min &&
+        product.price <= max &&
+        product.ratings >= ratings
+      );
+    });
+    setAllProducts(filter1);
+  };
+  useEffect(() => {
+    filteredProducts();
+  }, [ratings]);
   useEffect(() => {
     getAllProducts();
+    getCategories();
   }, []);
+  console.log(products);
   return (
     <>
       <div className="product-wrapper">
         <div className="filter-section">
           <div className="filter">
             <h2 style={{ fontSize: "2rem", textAlign: "center" }}>Filter</h2>
+            <hr />
+            <div className="ratings top-space">
+              <h2 style={{ fontSize: "1.6rem", textAlign: "left" }}>Rating</h2>
+              <input
+                type="range"
+                min={1}
+                max={5}
+                onChange={(e) => {
+                  setRatings(e.target.value);
+                }}
+                defaultValue={1}
+                className="ratings-input top-space"
+              />
+            </div>
+            <div className="price top-space">
+              <h2 style={{ fontSize: "1.6rem", textAlign: "left" }}>Price</h2>
+              <input
+                type="number"
+                min={0}
+                placeholder="₹ MIN"
+                onChange={(e) => {
+                  setMin(e.target.value);
+                }}
+                className="number-input"
+              />
+              <input
+                type="number"
+                placeholder="₹ MAX"
+                onChange={(e) => {
+                  setMax(e.target.value);
+                }}
+                className="number-input inp"
+              />
+              <button onClick={rangeFilter} style={{ marginLeft: "10px" }}>
+                GO
+              </button>
+            </div>
+            <div className="categories top-space">
+              <h2 style={{ fontSize: "1.6rem", textAlign: "left" }}>
+                Categories
+              </h2>
+              {categories.map((cat, i) => {
+                return (
+                  <div
+                    key={i}
+                    style={{ fontSize: "14px" }}
+                    className="top-space"
+                  >
+                    {cat.name}
+                  </div>
+                );
+              })}
+            </div>
           </div>
         </div>
         <div
@@ -115,29 +203,3 @@ export const Products = () => {
     </>
   );
 };
-
-{
-  /* <div className="products-items">
-  <figure>
-    <img src={`/uploads/${product.img[0]}`} alt="" />
-  </figure>
-  <h2 style={{ textAlign: "center", fontSize: "2.8rem" }}>{product.title}</h2>
-  <p
-    style={{
-      textAlign: "center",
-      fontSize: "1.5rem",
-      marginTop: "1rem",
-      fontWeight: "700",
-    }}
-  >
-    Rs {product.price}
-  </p>
-  <div
-    style={{
-      display: "flex",
-      alignItems: "center",
-      gap: "0.5rem",
-    }}
-  ></div>
-</div>; */
-}

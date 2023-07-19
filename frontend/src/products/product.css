@@ -85,7 +85,18 @@
   font-size: 1.5rem;
   font-weight: 700;
 }
-
+.ratings-input {
+  width: 95%;
+}
+.number-input {
+  width: 34%;
+}
+.inp {
+  margin-left: 10px;
+}
+.top-space {
+  margin-top: 10px;
+}
 @media only screen and (max-width: 1244px) {
   .product-wrapper {
     display: flex;
@@ -99,7 +110,7 @@
     gap: 0.8rem;
   }
   .product-wrapper .filter-section .filter {
-    height: 10vh;
+    height: max-content;
     /* background-color: black; */
   }
 }

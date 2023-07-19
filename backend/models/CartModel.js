@@ -21,6 +21,9 @@ const CartSchema = new mongoose.Schema(
         price: {
           type: Number,
         },
+        // stock: {
+        //   type: Number,
+        // },
       },
     ],
   },

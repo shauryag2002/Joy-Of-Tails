@@ -13,6 +13,8 @@ import { Error } from "./404/404";
 import Register from "./components/Register/Register";
 import { Productdetails } from "./Productsdetails/Productsdetails";
 import { Edit } from "./Edit/Edit";
+import Shipping from "./components/Cart/Shipping";
+import ConfirmOrder from "./components/Cart/ConfirmOrder";
 
 function App() {
   return (
@@ -37,6 +39,9 @@ function App() {
                   <Route path="/products/:id" element={<Productdetails />} />
                   <Route path="/edit/:id" element={<Edit />} />
                   <Route path="/cart" element={<Cart />} />
+                  <Route path="/shipping" element={<Shipping />} />
+                  <Route path="/order/confirm" element={<ConfirmOrder />} />
+
                   <Route path="*" element={<Error />} />
                 </Routes>
 
