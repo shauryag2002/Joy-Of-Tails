@@ -58,34 +58,47 @@ const Cart = () => {
     }
   };
   const [count, setCount] = useState(0);
+  const CartItemFun = async () => {
+    const id = localStorage.getItem("id");
+    // console.log(id);
+    const jwtToken = localStorage.getItem("token");
+    const res = await axios.get(`http://localhost:4000/api/cart/find/${id}`, {
+      headers: {
+        token: jwtToken,
+        "Content-Type": "application/json",
+      },
+    });
+    console.log(res);
+    setCartItems(res.data);
+  };
   useEffect(() => {
-    const CartItemFun = async () => {
-      const id = localStorage.getItem("id");
-      console.log(id);
-      const jwtToken = localStorage.getItem("token");
-      const res = await axios.get(`http://localhost:4000/api/cart/find/${id}`, {
-        headers: {
-          token: jwtToken,
-          "Content-Type": "application/json",
-        },
-      });
-      console.log(res);
-      setCartItems(res.data);
-    };
     CartItemFun();
   }, []);
 
   if (ok) {
     return <Cart />;
   }
+  const deleteCartItems = async (cartId, pid) => {
+    const { data } = await axios.delete(
+      `http://localhost:4000/api/cart/${cartId}/${pid}`,
+      {
+        headers: {
+          "Content-Type": "application/json",
+          token: localStorage.getItem("token"),
+        },
+      }
+    );
+    // setCartItems(data);
+    CartItemFun();
+  };
   return (
     <Fragment>
-      {cartItems.length === 0 ? (
+      {cartItems[0]?.products?.length === 0 ? (
         <div className="emptyCart">
           <MdRemoveShoppingCart className="font" />
 
           <div className="font">No Product in Your Cart</div>
-          <Link to="/" className="font">
+          <Link to="/products" className="font">
             View Products
           </Link>
         </div>
@@ -98,12 +111,13 @@ const Cart = () => {
               <p>Subtotal</p>
             </div>
 
-            {cartItems &&
-              cartItems[0].products?.map((item) => (
+            {cartItems[0] &&
+              cartItems[0]?.products?.map((item) => (
                 <div className="cartContainer" key={item._id}>
                   <CartItemCard
                     item={item}
-                    //   deleteCartItems={deleteCartItems}
+                    deleteCartItems={deleteCartItems}
+                    cartId={cartItems[0]._id}
                   />
                   <div className="cartInput">
                     <button

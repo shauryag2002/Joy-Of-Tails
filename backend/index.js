@@ -9,7 +9,7 @@ const userRoute = require("./routes/userRoute");
 const productRoute = require("./routes/productRoute");
 const orderRoute = require("./routes/orderRoute");
 const cartRoute = require("./routes/cartRoute");
-const stripeRoute = require("./routes/stripe");
+const razorpayRoute = require("./routes/razorpay");
 const categoryRoute = require("./routes/categoryRoute");
 const featureCatRoute = require("./routes/featuredCatRoute");
 const app = express();
@@ -38,10 +38,12 @@ app.use("/api/product", productRoute);
 app.use("/api/order", orderRoute);
 app.use("/api/cart", cartRoute);
 app.use("/api/category", categoryRoute);
-app.use("/api/checkout", stripeRoute);
+app.use("/api/order", razorpayRoute);
 
 app.listen(process.env.PORT, () => {
   console.log(
     `listening on port ${process.env.PORT}(http://localhost:${process.env.PORT})`
   );
 });
+
+// module.exports = instance;

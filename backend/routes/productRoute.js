@@ -19,6 +19,7 @@ router.post(
       const { originalname } = file;
       url.push(originalname);
     }
+<<<<<<< HEAD
     // const { title, desc, price, color, categories, brand } = req.body;
     console.log(req.body);
     if (
@@ -31,6 +32,14 @@ router.post(
     }
     try {
       const Create = await Product.create({
+=======
+    const { title, desc, img, price, color, categories } = req.body;
+    if (!req.body.title || !req.body.price || !req.body.categories) {
+      return res.status(400).send("Please include all fields");
+    }
+    try {
+      const Create = new Product({
+>>>>>>> efb89f5a453aaa6a4eb511c1322b58b2ad0ba617
         ...req.body,
         img: url,
       });

@@ -81,11 +81,15 @@ export const Products = () => {
     setCategories(data);
   };
   const filteredProducts = () => {
+<<<<<<< HEAD
     console.log(typeof ratings);
     if (ratings === "1") {
       window.location.reload();
     }
     const filter1 = products.filter((product) => {
+=======
+    const filter1 = products1.filter((product) => {
+>>>>>>> efb89f5a453aaa6a4eb511c1322b58b2ad0ba617
       return product.ratings >= ratings;
     });
     setAllProducts(filter1);
@@ -102,6 +106,7 @@ export const Products = () => {
     console.log(filter1);
     setAllProducts(filter1);
   };
+<<<<<<< HEAD
 
   const brandSearch = (title) => {
     const filter = products.filter((prod) => {
@@ -110,13 +115,21 @@ export const Products = () => {
     setAllProducts(filter);
   };
 
+=======
+  useEffect(() => {
+    filteredProducts();
+  }, [ratings]);
+>>>>>>> efb89f5a453aaa6a4eb511c1322b58b2ad0ba617
   useEffect(() => {
     getAllProducts();
     getCategories();
   }, []);
+<<<<<<< HEAD
   useEffect(() => {
     filteredProducts();
   }, [ratings]);
+=======
+>>>>>>> efb89f5a453aaa6a4eb511c1322b58b2ad0ba617
   return (
     <>
       <div className="product-wrapper">

@@ -17,6 +17,7 @@ const ConfirmOrder = ({ history }) => {
     state: "delhi",
     country: "delhi",
     pinCode: "110051",
+    email: "abc@xyz.com",
   });
   const [user, setUser] = useState({ name: "abc" });
   const [cartItems, setCartItems] = useState([
@@ -74,7 +75,64 @@ const ConfirmOrder = ({ history }) => {
 
     history.push("/process/payment");
   };
+  const checkoutHandler = async (amount) => {
+    const {
+      data: { key },
+    } = await axios.get("http://localhost:4000/api/order/getkey");
 
+    const {
+      data: { order },
+    } = await axios.post("http://localhost:4000/api/order/checkout", {
+      amount,
+    });
+
+    const options = {
+      key,
+      amount: order.amount,
+      currency: "INR",
+      name: "Joy Of Tails",
+      description: "Joy Of Tails ,A Eccomerce website",
+      image:
+        "https://m.media-amazon.com/images/S/al-eu-726f4d26-7fdb/4f1405ea-4f7e-4efd-a44f-f405588725ec._CR0%2C0%2C400%2C400_SX200_.png",
+      order_id: order.id,
+      callback_url: `http://localhost:4000/api/order/paymentverification`,
+      // handler: async function (response) {
+      //   const res = await axios.post(
+      //     "http://localhost:4000/api/order/paymentveriupdate",
+      //     {
+      //       razorpay_payment_id: response.razorpay_payment_id,
+      //       razorpay_order_id: response.razorpay_order_id,
+      //       razorpay_signature: response.razorpay_signature,
+      //       name: user.name,
+      //       email: shippingInfo.email,
+      //       phoneNo: shippingInfo.phoneNo,
+      //       amount: shippingInfo.amount,
+      //       address,
+      //       products: cartItems.products,
+      //     }
+      //   );
+      // },
+      prefill: {
+        name: user.name,
+        email: shippingInfo.email,
+        contact: `${shippingInfo.phoneNo}`,
+        products: cartItems.products,
+      },
+      notes: {
+        address: address,
+        name: user.name,
+        email: shippingInfo.email,
+        phoneNo: shippingInfo.phoneNo,
+        amount: shippingInfo.amount,
+        products: cartItems.products,
+      },
+      theme: {
+        color: "#FF6347",
+      },
+    };
+    const razor = new window.Razorpay(options);
+    razor.open();
+  };
   return (
     <Fragment>
       {/* <MetaData title="Confirm Order" /> */}
@@ -90,7 +148,7 @@ const ConfirmOrder = ({ history }) => {
               </div>
               <div>
                 <p>Phone:</p>
-                {/* <span>{shippingInfo.phoneNo}</span> */}
+                <span>{shippingInfo.phoneNo}</span>
               </div>
               <div>
                 <p>Address:</p>
@@ -143,7 +201,14 @@ const ConfirmOrder = ({ history }) => {
               <span>₹{totalPrice}</span>
             </div>
 
-            <button onClick={proceedToPayment}>Proceed To Payment</button>
+            <button
+              onClick={() => {
+                checkoutHandler(totalPrice);
+                // proceedToPayment
+              }}
+            >
+              Proceed To Payment
+            </button>
           </div>
         </div>
       </div>

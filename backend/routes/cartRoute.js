@@ -134,6 +134,24 @@ router.delete("/:cartId", verifyToken, async (req, res, next) => {
     return res.status(500).json(err);
   }
 });
+// DELETE A PRODUCT FROM CART
+router.delete("/:cartId/:pid", verifyToken, async (req, res, next) => {
+  try {
+    const cart = await Cart.findById(req.params.cartId);
+    let items = [];
+    for (let i = 0; i < cart.products.length; i++) {
+      if (cart.products[i].productId === req.params.pid) {
+      } else {
+        items.push(cart.products[i]);
+      }
+    }
+    cart.products = items;
+    await cart.save();
+    return res.status(200).json(cart);
+  } catch (err) {
+    return res.status(500).json(err);
+  }
+});
 // GET USER'S CART
 router.get("/find/:id", verifyTokenAndAuthorization, async (req, res, next) => {
   console.log(req.params);
