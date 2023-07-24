@@ -20,7 +20,7 @@ import axios from "axios";
 export const Header = () => {
   const [menu, setMenu] = useState(true);
   const [show, setShow] = useState(false);
-  const [searchData, setSearchData] = useState({});
+  const [searchData, setSearchData] = useState([]);
 
   const [keyword, setKeyword] = useState([]);
   const [products, setProducts] = useState([]);
@@ -33,22 +33,29 @@ export const Header = () => {
   const { isAdmin, isUser } = useSelector((state) => {
     return state.Admin;
   });
-  console.log(isAdmin, isUser);
+
   const search = async () => {
+    console.log(keyword);
     const filterData = products.filter((item) => {
       if (keyword === "") {
         setShow(false);
-        return false;
-      } else {
+        return item;
+      }
+      if (item.brand.toLowerCase().includes(keyword.toLowerCase())) {
         setShow(true);
+        return item;
       }
       if (item.title.toLowerCase().includes(keyword.toLowerCase())) {
+        setShow(true);
+
         return item;
       }
       if (item.desc.toLowerCase().includes(keyword.toLowerCase())) {
+        setShow(true);
         return item;
       }
       if (item.categories.toLowerCase().includes(keyword.toLowerCase())) {
+        setShow(true);
         return item;
       }
     });
@@ -127,7 +134,9 @@ export const Header = () => {
                         setShow(false);
                       }}
                     >
-                      <Link to={`/products/${item._id}`}>{item.title}</Link>
+                      <Link to={`/products/${item._id}`}>
+                        {item.brand + " " + item.title}
+                      </Link>
                     </li>
                   );
                 })
@@ -143,7 +152,7 @@ export const Header = () => {
               <li>Service</li>
               {isAdmin && (
                 <li>
-                  <NavLink to="/admin/dashboard">Dashboard</NavLink>
+                  <NavLink to="/dashboard">Dashboard</NavLink>
                 </li>
               )}
               <li>

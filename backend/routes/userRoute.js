@@ -12,6 +12,7 @@ const router = require("express").Router();
 // UPDATE A USER
 router.put("/:id", verifyTokenAndAuthorization, async (req, res) => {
   const { password, ...others } = req.body;
+  console.log(req.body);
   try {
     if (password) {
       bcrypt.hash(password, 10, async function (err, hashedPassword) {
@@ -26,7 +27,7 @@ router.put("/:id", verifyTokenAndAuthorization, async (req, res) => {
             }
           );
           const savedUser = await user.save();
-          return res.status(200).json(savedUser);
+          return res.status(200).json({ success: true, savedUser });
         }
       });
     }

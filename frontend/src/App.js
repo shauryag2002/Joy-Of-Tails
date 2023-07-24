@@ -15,6 +15,11 @@ import { Productdetails } from "./Productsdetails/Productsdetails";
 import { Edit } from "./Edit/Edit";
 import Shipping from "./components/Cart/Shipping";
 import ConfirmOrder from "./components/Cart/ConfirmOrder";
+import { Persional } from "./Profile/Persionalinfo/Persional";
+import { Userorder } from "./Profile/Order/Userorder";
+import { User } from "./Dashboard/User";
+import { Admin } from "./Dashboard/Admin";
+import { Featured } from "./Dashboard/Featured";
 
 function App() {
   return (
@@ -30,10 +35,12 @@ function App() {
                 <Header />
                 <Routes>
                   <Route path="/" element={<Home />} />
-                  <Route path="admin" element={<Privateroute />}>
-                    <Route path="dashboard" element={<Dashboard />} />
+                  <Route path="dashboard" element={<Privateroute />}>
+                    <Route path="" element={<Admin />} />
+                    <Route path="products" element={<Dashboard />} />
                     <Route path="order" element={<Order />} />
-                    {/* <Route path="user" element={<User />} /> */}
+                    <Route path="user" element={<User />} />
+                    <Route path="feature" element={<Featured />} />
                   </Route>
                   <Route path="/products" element={<Products />} />
                   <Route path="/products/:id" element={<Productdetails />} />
@@ -41,6 +48,8 @@ function App() {
                   <Route path="/cart" element={<Cart />} />
                   <Route path="/shipping" element={<Shipping />} />
                   <Route path="/order/confirm" element={<ConfirmOrder />} />
+                  <Route path="/profile" element={<Persional />} />
+                  <Route path="/userorder" element={<Userorder />} />
 
                   <Route path="*" element={<Error />} />
                 </Routes>

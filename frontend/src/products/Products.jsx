@@ -9,13 +9,14 @@ import ReactPaginate from "react-paginate";
 import { AddShipping } from "../Store/ShipingSlice/ShipingSlice";
 
 export const Products = () => {
-  const [products, setAllProducts] = useState();
+  const [products, setAllProducts] = useState([]);
   const [page, setPage] = useState("");
   const [pageCount, setPageCount] = useState("");
   const [pagenation, setPagination] = useState([]);
-  const [products1, setProducts1] = useState();
+  const [products1, setProducts1] = useState([]);
   const [categories, setCategories] = useState([]);
   const [ratings, setRatings] = useState(1);
+
   const [min, setMin] = useState(0);
   const [max, setMax] = useState(10000000);
   const [filter, setFilter] = useState([]);
@@ -23,13 +24,15 @@ export const Products = () => {
   const dispatch = useDispatch();
 
   const data = useSelector((state) => {
-    console.log(state);
     return state.Shipping;
   });
 
   const getAllProducts = async () => {
-    const { data } = await axios.get(`http://localhost:4000/api/product`);
+    const { data } = await axios.get(
+      `http://localhost:4000/api/product?limit=${6}`
+    );
     setAllProducts(data.product);
+    // setBrand()
     setPageCount(data.pageCount);
     const paginationPage = [];
     for (let i = 1; i <= data.count; i++) {
@@ -74,11 +77,14 @@ export const Products = () => {
     }
   };
   const getCategories = async function () {
-    const { data } = await axios.get("http://localhost:4000/api/category/");
-    console.log(data);
+    const { data } = await axios.get("http://localhost:4000/api/category");
     setCategories(data);
   };
   const filteredProducts = () => {
+    console.log(typeof ratings);
+    if (ratings === "1") {
+      window.location.reload();
+    }
     const filter1 = products.filter((product) => {
       return product.ratings >= ratings;
     });
@@ -93,14 +99,22 @@ export const Products = () => {
         product.ratings >= ratings
       );
     });
+    console.log(filter1);
     setAllProducts(filter1);
   };
-  // useEffect(() => {
 
-  // }, [ratings]);
+  const brandSearch = (title) => {
+    const filter = products.filter((prod) => {
+      return prod.brand.toLowerCase().includes(title.toLowerCase());
+    });
+    setAllProducts(filter);
+  };
+
   useEffect(() => {
     getAllProducts();
     getCategories();
+  }, []);
+  useEffect(() => {
     filteredProducts();
   }, [ratings]);
   return (
@@ -109,7 +123,6 @@ export const Products = () => {
         <div className="filter-section">
           <div className="filter">
             <h2 style={{ fontSize: "2rem", textAlign: "center" }}>Filter</h2>
-            <hr />
             <div className="ratings top-space">
               <h2 style={{ fontSize: "1.6rem", textAlign: "left" }}>Rating</h2>
               <input
@@ -124,7 +137,9 @@ export const Products = () => {
               />
             </div>
             <div className="price top-space">
-              <h2 style={{ fontSize: "1.6rem", textAlign: "left" }}>Price</h2>
+              <h2 style={{ fontSize: "1.6rem", marginBottom: "0.6rem" }}>
+                Price
+              </h2>
               <input
                 type="number"
                 min={0}
@@ -147,23 +162,59 @@ export const Products = () => {
               </button>
             </div>
             <div className="categories top-space">
-              <h2 style={{ fontSize: "1.6rem", textAlign: "left" }}>
+              <h2
+                style={{
+                  fontSize: "1.6rem",
+                  textAlign: "left",
+                  marginTop: "2rem",
+                }}
+              >
                 Categories
               </h2>
               {categories.map((cat, i) => {
                 return (
                   <div
                     key={i}
-                    style={{ fontSize: "14px" }}
+                    style={{
+                      fontSize: "1.3rem",
+                      textTransform: "capitalize",
+                      cursor: "pointer",
+                    }}
                     className="top-space"
                   >
                     {cat.name}
                   </div>
                 );
               })}
+              <div>
+                <h2
+                  style={{
+                    fontSize: "1.6rem",
+                    textAlign: "left",
+                    marginTop: "2rem",
+                    marginBottom: "0.6rem",
+                  }}
+                >
+                  Brand
+                </h2>
+                <ul className="brand">
+                  {products.map((prod) => {
+                    return (
+                      <li
+                        onClick={() => {
+                          brandSearch(prod.brand);
+                        }}
+                      >
+                        {prod.brand}
+                      </li>
+                    );
+                  })}
+                </ul>
+              </div>
             </div>
           </div>
         </div>
+
         <div
           className={
             products && products.length > 0
@@ -183,13 +234,28 @@ export const Products = () => {
                           style={{ width: "100%" }}
                         />
                       </figure>
-                      <h2 style={{ textAlign: "center", fontSize: "2.8rem" }}>
+                      <h2 style={{ textAlign: "center", fontSize: "1.5rem" }}>
                         {product.title}
                       </h2>
+                      <p
+                        style={{
+                          textAlign: "center",
+                          fontSize: "1.2rem",
+                          fontWeight: "600",
+                          marginTop: "2rem",
+                        }}
+                      >
+                        Brand : {product.brand}
+                      </p>
                     </Link>
                     <div style={{ textAlign: "center", marginTop: "2rem" }}>
                       <p>
-                        <Rating size={20} /> || 109 reviews
+                        <Rating
+                          size={20}
+                          readonly
+                          initialValue={product.ratings}
+                        />{" "}
+                        || {product.numOfReviews} reviews
                       </p>
                     </div>
 
@@ -202,7 +268,7 @@ export const Products = () => {
                         color: "#044B9A",
                       }}
                     >
-                      Rs {product.price}
+                      ₹{product.price}
                     </p>
                     <button
                       onClick={() => {

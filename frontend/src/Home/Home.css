@@ -168,8 +168,8 @@
   grid-template-columns: 1fr 1fr 1fr;
 }
 .product .product-items {
-  width: 340px;
-  height: 420px;
+  /* width: 340px;
+  height: 520px; */
   border-radius: 20px;
   display: flex;
   flex-direction: column;
@@ -177,15 +177,10 @@
   border: 2px solid rgb(243, 241, 241);
   box-shadow: 0px 1px 2px rgb(227, 224, 224);
   cursor: pointer;
-  padding: 1rem 0;
   overflow: hidden;
+  padding: 2rem;
 }
 
-.product .product-items:hover {
-  transform: translateY(-2%);
-  transition: all 0.2s linear;
-  background-color: #ffc312;
-}
 .product .product-items:hover > button {
   transform: translateY(-2%);
   transition: all 0.2s linear;
@@ -194,12 +189,9 @@
 }
 
 .product .product-items figure {
-  width: 80%;
+  width: 75%;
+  height: 280px;
   margin: auto;
-}
-.product .product-items figure:hover {
-  transform: scale(1.2);
-  transition: all 0.2s linear;
 }
 .product .product-items button {
   background-color: orange;
@@ -209,6 +201,7 @@
   border: none;
   font-size: 1.5rem;
   font-weight: 700;
+  margin-top: 2rem;
 }
 .sleeping-dog {
   width: 100vw;

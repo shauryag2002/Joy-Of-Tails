@@ -1,0 +1,40 @@
+table {
+  background-color: rgb(242, 238, 238);
+  width: 80vw;
+  margin: auto;
+  text-align: center;
+  line-height: 2rem;
+  padding: 1rem 0;
+  border-collapse: separate;
+  border-spacing: 0rem 2rem;
+}
+tr {
+  font-size: 1.5rem;
+  cursor: pointer;
+}
+td {
+  font-size: 1.3rem;
+  color: rgb(97, 95, 95);
+  padding: 1.4rem 0;
+}
+td:nth-child(6) {
+  border: 1px solid rgb(23, 188, 23);
+  /* border-radius: 15px; */
+  margin-top: 2rem;
+}
+tr:nth-child(even):hover {
+  background-color: rgb(194, 186, 186);
+  transition: all 0.2s linear;
+  color: rgba(0, 0, 0, 0.842);
+}
+tr:nth-child(odd):hover > td {
+  background-color: rgb(14, 22, 32);
+  transition: all 0.2s linear;
+  color: white;
+}
+
+select {
+  outline: none;
+  padding: 0.5rem 1rem;
+  border-radius: 5px;
+}

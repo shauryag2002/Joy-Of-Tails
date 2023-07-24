@@ -47,15 +47,16 @@ export const MyCarousel = ({
         autoPlaySpeed={6000}
         className="carousel"
       >
-        {images.map((img) => {
-          return (
-            <motion.div key={img.key} className="carousel-container">
-              <figure>
-                <img src={img.imgName} alt={img.imgName} />
-              </figure>
-            </motion.div>
-          );
-        })}
+        {images.length > 0 &&
+          images.map((img) => {
+            return (
+              <motion.div key={img.key} className="carousel-container">
+                <figure>
+                  <img src={`/uploads/${img}`} alt={img.imgName} />
+                </figure>
+              </motion.div>
+            );
+          })}
       </Carousel>
     </>
   );

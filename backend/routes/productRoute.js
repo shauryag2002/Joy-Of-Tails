@@ -12,33 +12,29 @@ router.post(
   verifyTokenAndAdmin,
   multipleUpload.array("img"),
   async (req, res, next) => {
-    console.log(req.body);
     let url = [];
     const files = req.files;
+    console.log(files);
     for (const file of files) {
       const { originalname } = file;
       url.push(originalname);
     }
-    const { title, desc, img, price, color, categories } = req.body;
+    // const { title, desc, price, color, categories, brand } = req.body;
+    console.log(req.body);
     if (
       !req.body.title ||
       !req.body.desc ||
       !req.body.price ||
-      !req.body.color ||
       !req.body.categories
     ) {
       return res.status(400).send("Please include all fields");
     }
     try {
-      const Create = new Product({
-        title,
-        categories,
-        desc,
-        price,
-        color,
+      const Create = await Product.create({
+        ...req.body,
         img: url,
       });
-      await Create.save();
+      // await Create.save();
       return res.status(200).json({ Create, success: true });
     } catch (err) {
       return res.status(500).json(err);
@@ -51,7 +47,6 @@ router.put(
   verifyTokenAndAdmin,
   multipleUpload.array("img"),
   async (req, res, next) => {
-    console.log(req.body);
     try {
       const product = await Product.findByIdAndUpdate(req.params.id, req.body, {
         new: true,
@@ -78,7 +73,7 @@ router.delete("/:id", verifyTokenAndAdmin, async (req, res, next) => {
 router.get("/find/:id", async (req, res, next) => {
   try {
     const product = await Product.findById(req.params.id);
-    return res.status(200).json(product);
+    return res.status(200).json({ success: true, product });
   } catch (err) {
     return res.status(500).json(err);
   }
@@ -98,7 +93,7 @@ router.get("/", async (req, res, next) => {
         pageCount: count / Number(req.query.limit),
       });
     } else {
-      const product = await Product.find().limit(6);
+      const product = await Product.find();
       const count = await Product.find().countDocuments();
       return res.status(200).json({ product, count, pageCount: count / 6 });
     }

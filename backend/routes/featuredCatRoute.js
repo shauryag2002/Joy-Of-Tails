@@ -1,30 +1,61 @@
 const Featured = require("../models/FeaturedModel");
 const mongoose = require("mongoose");
+const multipleUpload = require("../utils/multer");
 const { verifyTokenAndAdmin } = require("../utils/verify");
 
 const router = require("express").Router();
 // GET FEATURE IMAGES
 router.get("/", async (req, res, next) => {
   try {
-    const feature = await Featured.find();
+    const feature = await Featured.findOne({});
     return res.status(200).json(feature);
   } catch (err) {
     return res.status(500).json(err);
   }
 });
 // CREATE FEATURE IMAGES
-router.post("/", verifyTokenAndAdmin, async (req, res, next) => {
-  if (!req.body.img || !req.body.name) {
-    return res.status(500).json({ message: "Please enter a name and image " });
+router.post(
+  "/",
+  verifyTokenAndAdmin,
+  multipleUpload.array("img"),
+  async (req, res, next) => {
+    console.log(req.files);
+    // if (!req.body.img || !req.body.name) {
+    //   return res
+    //     .status(500)
+    //     .json({ message: "Please enter a name and image " });
+    // }
+    let url = [];
+    const files = req.files;
+    for (file of files) {
+      url.push(file.originalname);
+    }
+    try {
+      const match = await Featured.findOne({ isAdmin: req.body.isAdmin });
+      if (match) {
+        const feature = await Featured.updateOne(
+          {
+            isAdmin: req.body.isAdmin,
+          },
+          { $set: { img: url } },
+          {
+            new: true,
+          }
+        );
+        // await feature.save();
+        return res.status(200).json({ success: true, feature });
+      } else {
+        await Featured.create({
+          img: url,
+          isAdmin: req.body.isAdmin,
+        });
+      }
+    } catch (err) {
+      console.log(err);
+      return res.status(500).json({ err });
+    }
   }
-  try {
-    const feature = await new Featured(req.body);
-    await feature.save();
-    return res.status(200).json(feature);
-  } catch (err) {
-    return res.status(500).json(err);
-  }
-});
+);
 // UPDATE FEATURE IMAGES
 router.put("/:id", verifyTokenAndAdmin, async (req, res, next) => {
   try {
@@ -38,11 +69,12 @@ router.put("/:id", verifyTokenAndAdmin, async (req, res, next) => {
   }
 });
 // DELETE FEATURE IMAGES
-router.delete("/:id", verifyTokenAndAdmin, async (req, res, next) => {
+router.delete("/delete", verifyTokenAndAdmin, async (req, res, next) => {
   try {
-    const feature = await Featured.findByIdAndDelete(req.params.id);
-
-    res.status(200).json({ message: "Feature deleted Successfully" });
+    const feature = await Featured.deleteMany({});
+    res
+      .status(200)
+      .json({ success: true, message: "Feature deleted Successfully" });
   } catch (err) {
     return res.status(500).json(err);
   }

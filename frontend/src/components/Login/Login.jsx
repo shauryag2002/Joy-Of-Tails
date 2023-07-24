@@ -27,7 +27,7 @@ const Login = () => {
       if (data.success) {
         if (data.isAdmin) {
           dispatch(checkIsAdmin(data.isAdmin));
-          navigate("/admin/dashboard");
+          navigate("/dashboard");
         } else {
           dispatch(checkIsAdmin(false));
           navigate("/");

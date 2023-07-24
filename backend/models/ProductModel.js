@@ -31,13 +31,7 @@ const ProductSchema = new mongoose.Schema(
       maxLength: [4, "Stock cannot exceed 4 characters"],
       default: 1,
     },
-    gramPerQuantity: [
-      {
-        quantity: String,
-        price: Number,
-        gram: String,
-      },
-    ],
+    gramPerQuantity: String,
     numOfReviews: {
       type: Number,
       default: 0,
@@ -49,6 +43,14 @@ const ProductSchema = new mongoose.Schema(
     foodType: {
       type: String,
       default: "veg",
+    },
+    discount: {
+      type: Number,
+      default: 0,
+    },
+    sellingPrice: {
+      type: Number,
+      required: true,
     },
     reviews: [
       {

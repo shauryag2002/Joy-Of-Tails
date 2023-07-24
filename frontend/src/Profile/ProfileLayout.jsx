@@ -19,6 +19,7 @@ export const ProfileLayout = ({ children }) => {
     console.log(data);
     setUser({ ...data });
   };
+
   useEffect(() => {
     getUser();
   }, []);

@@ -6,6 +6,7 @@ const verifyToken = async (req, res, next) => {
     const token = authHeader;
     jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
       if (err) return res.status(403).json("Token is not valid!");
+      console.log(user);
       req.user = user;
       next();
     });

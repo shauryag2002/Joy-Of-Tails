@@ -1,7 +1,26 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import "./Order.css";
 import { Dashboardnav } from "../components/Dashboardnav/Dashboardnav";
+import axios from "axios";
 
 export const Order = () => {
+  const [order, setOrders] = useState([]);
+
+  const getOrders = async () => {
+    const { data } = await axios.get("http://localhost:4000/api/order", {
+      headers: {
+        token: localStorage.getItem("token"),
+      },
+    });
+    setOrders(data);
+  };
+
+  const changeStatus = (e, id) => {};
+
+  React.useEffect(() => {
+    getOrders();
+  });
+
   return (
     <section className="dashboard-section">
       <div className="dashboard-wrapper">
@@ -9,25 +28,55 @@ export const Order = () => {
           <Dashboardnav />
         </div>
         <div className="right-section">
+          {order.length < 0 && <h2>Loading</h2>}
+
           <div className="items-wrapper">
-            <div className="items">
-              <img
-                src="https://images.unsplash.com/photo-1542291026-7eec264c27ff?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80"
-                alt=""
-              />
-              <div>
-                <h2>Order1</h2>
-                <p>
-                  Lorem ipsum dolor sit amet consectetur, adipisicing elit.
-                  Incidu
-                </p>
-              </div>
-              <div style={{ display: "flex", gap: "1rem" }}>
-                <button>Edit</button>
-                <button>Delete</button>
-              </div>
-            </div>
+            <table>
+              <thead>
+                <tr>
+                  <th>Sr No</th>
+                  <th>Order id</th>
+                  <th>Product Name</th>
+                  <th>Address</th>
+                  <th>Price</th>
+                  <th>Status</th>
+                  <th>Date</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                {order.length > 0 &&
+                  order.map((order, index) => {
+                    return (
+                      <tr>
+                        <td>{index}</td>
+                        <td>{order._id}</td>
+                        <td>{order.products.length}</td>
+                        <td>{order.address}</td>
+                        <td>₹ {order.amount}</td>
+                        <td>{order.status}</td>
+                        <td>{order.createdAt}</td>
+                        <td>
+                          <select
+                            name="status"
+                            id="status"
+                            onChange={(e) => {
+                              changeStatus(e, order._id);
+                            }}
+                          >
+                            <option value="Pendint">Pending</option>
+                            <option value="Shipped">Shipped</option>
+                            <option value="Complete">Complete</option>
+                            <option value="Reject">Reject</option>
+                          </select>
+                        </td>
+                      </tr>
+                    );
+                  })}
+              </tbody>
+            </table>
           </div>
+
           <div style={{ width: "70%", margin: " 2rem auto" }}>
             <p style={{ fontSize: "1.6rem" }}>Page 1 out of 30</p>
           </div>

@@ -1,22 +1,36 @@
 import React from "react";
-import { NavLink } from "react-router-dom";
+import { NavLink, Link } from "react-router-dom";
+import { TbLayoutDashboard } from "react-icons/tb";
+import {
+  MdOutlineProductionQuantityLimits,
+  MdOutlineBorderColor,
+} from "react-icons/md";
+import { BiUserCircle } from "react-icons/bi";
 
 export const Dashboardnav = () => {
   return (
     <div>
       <ul>
         <li>
-          <NavLink to="/admin/dashboard">All Products</NavLink>
+          <TbLayoutDashboard />
+          <Link to="/dashboard">Dashboard</Link>
         </li>
         <li>
-          <NavLink to="/admin/order">Order</NavLink>
+          <MdOutlineProductionQuantityLimits />
+          <NavLink to="/dashboard/products">All Products</NavLink>
         </li>
         <li>
-          <NavLink to="/admin/user">Users</NavLink>
+          <MdOutlineBorderColor />
+          <NavLink to="/dashboard/order">All Order</NavLink>
         </li>
-        {/* <li>
-          <NavLink to="/admin/order">Order</NavLink>
-        </li> */}
+        <li>
+          <BiUserCircle />
+          <NavLink to="/dashboard/user">All Users</NavLink>
+        </li>
+        <li>
+          <BiUserCircle />
+          <NavLink to="/dashboard/feature"> Banner</NavLink>
+        </li>
       </ul>
     </div>
   );

@@ -23,17 +23,21 @@ export const User = () => {
   }, [show]);
 
   const deleteUser = async (id) => {
-    const { data } = await axios.delete(`http://localhost:4000/api/user/${id}`);
-    if (data.success) {
-      setOk(true);
+    const confirm = window.confirm("Are you sure");
+    if (confirm) {
+      const { data } = await axios.delete(
+        `http://localhost:4000/api/user/${id}`
+      );
+      if (data.success) {
+        setOk(true);
+      }
     }
   };
 
   const search = () => {
     const filterData = user.filter((item) => {
       if (keyword === "") {
-        setShow(!show);
-        return item;
+        window.location.reload();
       }
       if (item.username.toLowerCase().includes(keyword.toLowerCase())) {
         return item;
@@ -71,45 +75,38 @@ export const User = () => {
             onKeyUp={search}
           />
           <div className="user-wrapper">
-            {user &&
-              user.map((userData) => {
-                return (
-                  <div className="items">
-                    <img src={userData.image} alt="" />
-                    <div>
-                      <h2
-                        style={{
-                          fontSize: "2rem",
-                          textAlign: "center",
-                          textTransform: "capitalize",
-                        }}
-                      >
-                        {userData.username}
-                      </h2>
-                      {/* <p >
-                        Lorem ipsum dolor sit amet consectetur, adipisicing
-                        elit. Incidu
-                      </p> */}
-                    </div>
-                    <div
-                      style={{
-                        display: "flex",
-                        justifyContent: "center",
-                        marginTop: "2rem",
-                      }}
-                    >
-                      {/* <button>Edit</button> */}
-                      <button
-                        onClick={() => {
-                          deleteUser(userData._id);
-                        }}
-                      >
-                        Delete
-                      </button>
-                    </div>
-                  </div>
-                );
-              })}
+            <table style={{ marginTop: "2rem" }}>
+              <thead>
+                <tr>
+                  <th>Sr No</th>
+                  <th>User id</th>
+                  <th>Name</th>
+                  <th>Eamil</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                {user &&
+                  user.map((userData, index) => {
+                    return (
+                      <tr>
+                        <td>{index + 1}</td>
+                        <td>{userData._id}</td>
+                        <td>{userData.username}</td>
+                        <td>{userData.email}</td>
+                        <button
+                          className="btn"
+                          onClick={() => {
+                            deleteUser(userData._id);
+                          }}
+                        >
+                          Delete
+                        </button>
+                      </tr>
+                    );
+                  })}
+              </tbody>
+            </table>
           </div>
           {/* <div style={{ width: "70%", margin: " 2rem auto" }}>
             <p style={{ fontSize: "1.6rem" }}>Page 1 out of 30</p>
@@ -119,3 +116,38 @@ export const User = () => {
     </section>
   );
 };
+
+// <div className="items">
+//   <img src={userData.image} alt="" />
+//   <div>
+//     <h2
+//       style={{
+//         fontSize: "2rem",
+//         textAlign: "center",
+//         textTransform: "capitalize",
+//       }}
+//     >
+//       {userData.username}
+//     </h2>
+//     {/* <p >
+//       Lorem ipsum dolor sit amet consectetur, adipisicing
+//       elit. Incidu
+//     </p> */}
+//   </div>
+//   <div
+//     style={{
+//       display: "flex",
+//       justifyContent: "center",
+//       marginTop: "2rem",
+//     }}
+//   >
+//     {/* <button>Edit</button> */}
+//     <button
+//       onClick={() => {
+//         deleteUser(userData._id);
+//       }}
+//     >
+//       Delete
+//     </button>
+//   </div>
+// </div>

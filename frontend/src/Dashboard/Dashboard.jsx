@@ -15,13 +15,22 @@ export const Dashboard = () => {
   const [ok, setOK] = useState(false);
   const [allProducts, setAllProducts] = useState([]);
   const [image, setImage] = useState("");
+  const [sellingprice, setSelling] = useState(0);
+  const [actualsellingprice, setActualSelling] = useState(0);
+
   const [formdata, setFormData] = useState({
+    brand: "",
     title: "",
     desc: "",
     categories: "",
     color: "",
     stock: "",
     price: "",
+    foodType: "",
+    animalType: "",
+    gramPerQuantity: "",
+    discount: 0,
+    mrp: "",
   });
 
   const getProducts = async () => {
@@ -43,7 +52,7 @@ export const Dashboard = () => {
 
   const changePage = async ({ selected }) => {
     const { data } = await axios.get(
-      `http://localhost:4000/api/product?page=${selected + 1}&limit=${6}`
+      `http://localhost:4000/api/product?page=${selected + 1} & limit=${6}`
     );
     setAllProducts(data.product);
   };
@@ -56,11 +65,16 @@ export const Dashboard = () => {
       formData.append("img", image[i]);
     }
     formData.append("title", formdata.title);
+    formData.append("brand", formdata.brand);
+    formData.append("animalType", formdata.animalType);
+    formData.append("foodType", formdata.foodType);
+    formData.append("gramPerQuantity", formdata.gramPerQuantity);
     formData.append("desc", formdata.desc);
-    formData.append("price", formdata.price);
+    formData.append("price", formdata.mrp);
     formData.append("categories", formdata.categories);
     formData.append("color", formdata.color);
-    formData.append("stock", formdata.stock);
+    formData.append("sellingPrice", formdata.mrp - sellingprice);
+    formData.append("discount", formdata.discount);
 
     const { data } = await axios.post(
       "http://localhost:4000/api/product",
@@ -104,9 +118,11 @@ export const Dashboard = () => {
   };
 
   const search = () => {
+    console.log(keyword);
+    console.log(allProducts);
     const filterData = allProducts.filter(async (item) => {
       if (keyword === "") {
-        return item;
+        window.location.reload();
       }
       if (item.title.toLowerCase().includes(keyword.toLowerCase())) {
         return item;
@@ -121,6 +137,7 @@ export const Dashboard = () => {
         return item;
       }
     });
+
     setAllProducts(filterData);
   };
 
@@ -168,10 +185,10 @@ export const Dashboard = () => {
           <div>
             <textarea
               type="text"
-              name="description"
+              name="desc"
               placeholder="product description"
               onChange={handleChange}
-              value={formdata.categories}
+              value={formdata.desc}
               rows={8}
             />
           </div>
@@ -188,6 +205,35 @@ export const Dashboard = () => {
           <div>
             <input
               type="text"
+              name="animalType"
+              placeholder="animaltype"
+              onChange={handleChange}
+              value={formdata.animaltype}
+            />
+          </div>
+          <div>
+            <input
+              type="text"
+              name="gramPerQuantity"
+              placeholder="gramperquantity"
+              onChange={handleChange}
+              value={formdata.gramperquantity}
+            />
+          </div>
+
+          <div>
+            <input
+              type="text"
+              name="foodType"
+              placeholder="food type"
+              onChange={handleChange}
+              value={formdata.foodtype}
+            />
+          </div>
+
+          <div>
+            <input
+              type="text"
               name="stock"
               placeholder="product stock"
               onChange={handleChange}
@@ -197,10 +243,34 @@ export const Dashboard = () => {
           <div>
             <input
               type="text"
-              name="price"
-              placeholder="product price"
+              name="mrp"
+              placeholder="product price in MRP"
               onChange={handleChange}
-              value={formdata.price}
+              value={formdata.mrp}
+            />
+          </div>
+          <div>
+            <p>Dicount in %</p>
+            <input
+              type="text"
+              name="discount"
+              placeholder="discount in % "
+              onChange={handleChange}
+              value={formdata.discount}
+              onKeyUp={() => {
+                setSelling(
+                  (Number(formdata.mrp) * Number(formdata.discount)) / 100
+                );
+              }}
+            />
+          </div>
+          <div>
+            <p>Seeling Price</p>
+            <input
+              type="text"
+              name="sellingprice"
+              placeholder="sellingprice "
+              value={formdata.mrp - sellingprice}
             />
           </div>
           <div>
@@ -216,7 +286,7 @@ export const Dashboard = () => {
           </div>
 
           <div>
-            <button>Submit</button>
+            <button className="modal-btn">Submit</button>
           </div>
         </form>
       </Modal>
@@ -261,6 +331,7 @@ export const Dashboard = () => {
               Create
             </button>
           </div>
+          {allProducts.length < 0 && <h2>No Products</h2>}
           <div className="items-wrapper">
             {allProducts.length > 0 ? (
               allProducts.map((products) => {
@@ -271,24 +342,13 @@ export const Dashboard = () => {
                       style={{
                         display: "flex",
                         flexDirection: "column",
-                        gap: "1rem",
+                        gap: "1.5rem",
                         padding: "0 7rem",
                       }}
                     >
-                      <h2 style={{ fontSize: "2rem" }}>
-                        Titile :{products.title}
-                      </h2>
-                      <p style={{ fontSize: "1.4rem" }}>
-                        Price {products.price}
-                      </p>
-                      <p
-                        style={{
-                          fontSize: "1.2rem",
-                          textAlign: "justify",
-                          lineHeight: "1.8rem",
-                        }}
-                      >
-                        {products.desc}
+                      <h2 style={{ fontSize: "1.8rem" }}>{products.title}</h2>
+                      <p style={{ fontSize: "1.4rem", fontWeight: "600" }}>
+                        ₹ {products.price}
                       </p>
                     </div>
                     <div
@@ -317,7 +377,7 @@ export const Dashboard = () => {
               <h2
                 style={{ textAlign: "center", fontSize: "4rem", color: "gray" }}
               >
-                No Products Avilable
+                Loading....
               </h2>
             )}
           </div>

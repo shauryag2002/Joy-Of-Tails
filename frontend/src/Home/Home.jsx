@@ -1,5 +1,8 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import axios from "axios";
 import "./Home.css";
+import { Rating } from "react-simple-star-rating";
+
 import { PiDogFill } from "react-icons/pi";
 import { FaCat } from "react-icons/fa";
 import { MyCarousel } from "../Carousel/Carousel";
@@ -9,7 +12,7 @@ import { BsTelephoneFill } from "react-icons/bs";
 import dog from "../Asset/dog.webp";
 import cat from "../Asset/cat.webp";
 import girl from "../Asset/girl.webp";
-import { Link, NavLink } from "react-router-dom";
+import { Link, NavLink, useParams } from "react-router-dom";
 import { CustomerCarousel } from "../Carousel/CustomerCarousel";
 
 const images = [
@@ -45,6 +48,54 @@ const customerImages = [
   },
 ];
 export const Home = () => {
+  const params = useParams();
+  const [products, setAllProducts] = useState([]);
+  const [featuredImage, setFeaturedImage] = useState([]);
+
+  const getAllProducts = async () => {
+    const { data } = await axios.get(
+      `http://localhost:4000/api/product?limit=${6}`
+    );
+    setAllProducts(data.product);
+  };
+
+  const addCart = async (product) => {
+    const { data } = await axios.post(
+      "http://localhost:4000/api/cart",
+      {
+        userId: localStorage.getItem("id"),
+        products: [
+          {
+            productId: product._id,
+            quantity: 1,
+            img: product.img,
+            name: product.title,
+            price: product.price,
+          },
+        ],
+      },
+      {
+        headers: {
+          token: localStorage.getItem("token"),
+        },
+      }
+    );
+    if (data.success) {
+      alert("Add to cart");
+    }
+  };
+
+  const getFeaturedImage = async () => {
+    const { data } = await axios.get("http://localhost:4000/api/featured");
+    if (data) {
+      setFeaturedImage(data.img);
+    }
+  };
+
+  useEffect(() => {
+    getAllProducts();
+    getFeaturedImage();
+  }, []);
   return (
     <>
       <section className="category-section">
@@ -159,7 +210,7 @@ export const Home = () => {
         }}
       >
         <MyCarousel
-          images={images}
+          images={featuredImage}
           desktop={1}
           dots={true}
           arrow={false}
@@ -260,30 +311,66 @@ export const Home = () => {
       </section>
       <section>
         <div className="product">
-          <div className="product-items">
-            <figure>
-              <img src={dog} style={{ width: "100%" }} />
-            </figure>
-            <button>Add to Cart</button>
-          </div>
-          <div className="product-items">
-            <figure>
-              <img src={dog} style={{ width: "100%" }} />
-            </figure>
-            <button>Add to Cart</button>
-          </div>{" "}
-          <div className="product-items">
-            <figure>
-              <img src={dog} style={{ width: "100%" }} />
-            </figure>
-            <button>Add to Cart</button>
-          </div>{" "}
-          <div className="product-items">
-            <figure>
-              <img src={dog} style={{ width: "100%" }} />
-            </figure>
-            <button>Add to Cart</button>
-          </div>
+          {products && products.length > 0 ? (
+            products.map((product) => {
+              return (
+                <div className="product-items">
+                  <Link to={`/products/${product._id}`}>
+                    <figure>
+                      <img
+                        src={`/uploads/${product.img[0]}`}
+                        style={{ width: "100%", height: "100%" }}
+                      />
+                    </figure>
+                    <h2
+                      style={{
+                        textAlign: "justify",
+                        fontSize: "1.5rem",
+                        marginTop: "4rem",
+                      }}
+                    >
+                      {product.title}
+                    </h2>
+                  </Link>
+                  <div style={{ textAlign: "center", marginTop: "2rem" }}>
+                    <p>
+                      <Rating size={20} readonly /> || 109 reviews
+                    </p>
+                  </div>
+
+                  <p
+                    style={{
+                      textAlign: "center",
+                      fontSize: "1.5rem",
+                      marginTop: "1rem",
+                      fontWeight: "700",
+                      color: "#044B9A",
+                    }}
+                  >
+                    ₹{product.price}
+                  </p>
+                  <button
+                    onClick={() => {
+                      addCart(product);
+                    }}
+                  >
+                    Add to Cart
+                  </button>
+                </div>
+              );
+            })
+          ) : (
+            <p
+              style={{
+                textAlign: "center",
+                fontSize: "5rem",
+                color: "gray",
+                marginTop: "2rem",
+              }}
+            >
+              No Products Avilable
+            </p>
+          )}
         </div>
       </section>
       <section>
