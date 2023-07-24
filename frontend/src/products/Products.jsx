@@ -1,23 +1,52 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import "./product.css";
+import { useSelector, useDispatch } from "react-redux";
 import { Rating } from "react-simple-star-rating";
 import { Link } from "react-router-dom";
 import Cookies from "js-cookie";
+import ReactPaginate from "react-paginate";
+import { AddShipping } from "../Store/ShipingSlice/ShipingSlice";
 
 export const Products = () => {
   const [products, setAllProducts] = useState([]);
+  const [page, setPage] = useState("");
+  const [pageCount, setPageCount] = useState("");
+  const [pagenation, setPagination] = useState([]);
   const [products1, setProducts1] = useState([]);
   const [categories, setCategories] = useState([]);
   const [ratings, setRatings] = useState(1);
   const [min, setMin] = useState(0);
   const [max, setMax] = useState(10000000);
   const [filter, setFilter] = useState([]);
+
+  const dispatch = useDispatch();
+
+  const data = useSelector((state) => {
+    console.log(state);
+    return state.Shipping;
+  });
+
   const getAllProducts = async () => {
-    const { data } = await axios.get("http://localhost:4000/api/product");
-    setAllProducts(data);
-    setProducts1(data);
+    const { data } = await axios.get(`http://localhost:4000/api/product`);
+    setAllProducts(data.product);
+    setPageCount(data.pageCount);
+    const paginationPage = [];
+    for (let i = 1; i <= data.count; i++) {
+      paginationPage.push(i);
+    }
+    setPagination([...paginationPage]);
+
+    setProducts1(data.product);
   };
+
+  const changePage = async ({ selected }) => {
+    const { data } = await axios.get(
+      `http://localhost:4000/api/product?page=${selected + 1}&limit=${6}`
+    );
+    setAllProducts(data.product);
+  };
+  // export const Products = () => {
 
   const addCart = async (product) => {
     const { data } = await axios.post(
@@ -40,7 +69,9 @@ export const Products = () => {
         },
       }
     );
-    console.log(data);
+    if (data.success) {
+      alert("Add to cart");
+    }
   };
   const getCategories = async function () {
     const { data } = await axios.get("http://localhost:4000/api/category/");
@@ -71,7 +102,6 @@ export const Products = () => {
     getAllProducts();
     getCategories();
   }, []);
-  console.log(products);
   return (
     <>
       <div className="product-wrapper">
@@ -198,6 +228,50 @@ export const Products = () => {
           )}
         </div>
       </div>
+      <div style={{ display: "flex", justifyContent: "center" }}>
+        <ReactPaginate
+          breakLabel="..."
+          nextLabel="next >"
+          onPageChange={changePage}
+          pageRangeDisplayed={pageCount}
+          containerClassName="pagination"
+          pageLinkClassName="page-num"
+          activeClassName="active"
+          pageCount={pageCount}
+          marginPagesDisplayed={2}
+          previousLabel="< previous"
+          renderOnZeroPageCount={null}
+        />
+      </div>
+      {/* 
+      <button
+        onClick={() => {
+          dispatch(
+            AddShipping({
+              city: "love",
+              state: "Haryana",
+            })
+          );
+        }}
+      >
+        Clickf
+      </button> */}
+
+      {/* <div style={{ display: "flex", justifyContent: "center", gap: "2rem" }}>
+        {pagenation &&
+          pagenation.map((i) => {
+            return (
+              <span
+                style={{ fontSize: "1.8rem", cursor: "pointer" }}
+                onClick={() => {
+                  changePage(i);
+                }}
+              >
+                {i}
+              </span>
+            );
+          })}
+      </div> */}
     </>
   );
 };

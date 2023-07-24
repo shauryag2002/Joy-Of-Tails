@@ -19,21 +19,13 @@ router.post(
       const { originalname } = file;
       url.push(originalname);
     }
-    const { title, desc, img, price, color } = req.body;
-    if (
-      !req.body.title ||
-      !req.body.desc ||
-      !req.body.price ||
-      !req.body.color
-    ) {
+    const { title, desc, img, price, color, categories } = req.body;
+    if (!req.body.title || !req.body.price || !req.body.categories) {
       return res.status(400).send("Please include all fields");
     }
     try {
       const Create = new Product({
-        title,
-        desc,
-        price,
-        color,
+        ...req.body,
         img: url,
       });
       await Create.save();
@@ -86,12 +78,19 @@ router.get("/", async (req, res, next) => {
   try {
     if (req.query.limit) {
       const product = await Product.find()
-        .limit(req.query.limit)
-        .sort({ createdAt: -1 });
-      return res.status(200).json(product);
+        .limit(Number(req.query.limit))
+        .skip(Number(req.query.page - 1) * Number(req.query.limit));
+      const count = await Product.find().countDocuments();
+
+      return res.status(200).json({
+        product,
+        count,
+        pageCount: count / Number(req.query.limit),
+      });
     } else {
-      const product = await Product.find();
-      return res.status(200).json(product);
+      const product = await Product.find().limit(6);
+      const count = await Product.find().countDocuments();
+      return res.status(200).json({ product, count, pageCount: count / 6 });
     }
   } catch (err) {
     return res.status(500).json(err);

@@ -5,7 +5,7 @@ let isAdmin;
 let isUser;
 
 if (localStorage.getItem("isAdmin")) {
-  isAdmin = localStorage.getItem("isAdmin");
+  isAdmin = JSON.parse(localStorage.getItem("isAdmin"));
 }
 if (localStorage.getItem("token")) {
   isUser = localStorage.getItem("token");
@@ -20,11 +20,13 @@ const AdminSlice = createSlice({
   reducers: {
     checkIsAdmin(state, action) {
       return {
+        ...state,
         isAdmin: action.payload,
       };
     },
     checkIsUser(state, action) {
       return {
+        ...state,
         isUser: action.payload,
       };
     },

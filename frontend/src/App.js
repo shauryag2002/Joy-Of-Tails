@@ -15,6 +15,7 @@ import { Productdetails } from "./Productsdetails/Productsdetails";
 import { Edit } from "./Edit/Edit";
 import Shipping from "./components/Cart/Shipping";
 import ConfirmOrder from "./components/Cart/ConfirmOrder";
+import PaymentSuccess from "./PaymentSuccess/PaymentSuccess";
 
 function App() {
   return (
@@ -33,15 +34,15 @@ function App() {
                   <Route path="admin" element={<Privateroute />}>
                     <Route path="dashboard" element={<Dashboard />} />
                     <Route path="order" element={<Order />} />
+                    {/* <Route path="user" element={<User />} /> */}
                   </Route>
-
                   <Route path="/products" element={<Products />} />
                   <Route path="/products/:id" element={<Productdetails />} />
                   <Route path="/edit/:id" element={<Edit />} />
                   <Route path="/cart" element={<Cart />} />
                   <Route path="/shipping" element={<Shipping />} />
                   <Route path="/order/confirm" element={<ConfirmOrder />} />
-
+                  <Route path="/paymentsuccess" element={<PaymentSuccess />} />
                   <Route path="*" element={<Error />} />
                 </Routes>
 

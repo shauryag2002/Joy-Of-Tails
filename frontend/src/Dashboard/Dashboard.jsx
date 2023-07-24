@@ -1,4 +1,5 @@
 import "./Dashboard.css";
+import ReactPaginate from "react-paginate";
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { Modal } from "antd";
@@ -8,10 +9,11 @@ import { Link } from "react-router-dom";
 
 export const Dashboard = () => {
   const [open, setOpen] = useState(false);
+  const [show, setShow] = useState(false);
+  const [pageCount, setPageCount] = useState("");
+  const [keyword, setKeyword] = useState("");
   const [ok, setOK] = useState(false);
-
   const [allProducts, setAllProducts] = useState([]);
-
   const [image, setImage] = useState("");
   const [formdata, setFormData] = useState({
     title: "",
@@ -24,18 +26,26 @@ export const Dashboard = () => {
 
   const getProducts = async () => {
     const { data } = await axios.get("http://localhost:4000/api/product");
-    setAllProducts(data);
+    setAllProducts(data.product);
+    setPageCount(data.pageCount);
   };
 
   useEffect(() => {
     getProducts();
-  }, []);
+  }, [show]);
 
   const handleChange = (e) => {
     setFormData({
       ...formdata,
       [e.target.name]: e.target.value,
     });
+  };
+
+  const changePage = async ({ selected }) => {
+    const { data } = await axios.get(
+      `http://localhost:4000/api/product?page=${selected + 1}&limit=${6}`
+    );
+    setAllProducts(data.product);
   };
 
   const handleSubmit = async (e) => {
@@ -62,6 +72,7 @@ export const Dashboard = () => {
       }
     );
     setFormData({
+      brand: "",
       title: "",
       desc: "",
       categories: "",
@@ -76,17 +87,41 @@ export const Dashboard = () => {
   };
 
   const deleteProduct = async (id) => {
-    const { data } = await axios.delete(
-      `http://localhost:4000/api/product/${id}`,
-      {
-        headers: {
-          token: Cookies.get("token"),
-        },
+    const val = window.confirm("Are you Sure");
+    if (val) {
+      const { data } = await axios.delete(
+        `http://localhost:4000/api/product/${id}`,
+        {
+          headers: {
+            token: Cookies.get("token"),
+          },
+        }
+      );
+      if (data.success) {
+        setOK(true);
       }
-    );
-    if (data.success) {
-      setOK(true);
     }
+  };
+
+  const search = () => {
+    const filterData = allProducts.filter(async (item) => {
+      if (keyword === "") {
+        return item;
+      }
+      if (item.title.toLowerCase().includes(keyword.toLowerCase())) {
+        return item;
+      }
+      if (item.desc.toLowerCase().includes(keyword.toLowerCase())) {
+        return item;
+      }
+      if (item.categories.toLowerCase().includes(keyword.toLowerCase())) {
+        return item;
+      }
+      if (item.price.toString().toLowerCase().includes(keyword.toLowerCase())) {
+        return item;
+      }
+    });
+    setAllProducts(filterData);
   };
 
   if (ok) {
@@ -105,6 +140,15 @@ export const Dashboard = () => {
           <div>
             <input
               type="text"
+              name="brand"
+              placeholder="product brand"
+              onChange={handleChange}
+              value={formdata.brand}
+            />
+          </div>
+          <div>
+            <input
+              type="text"
               name="title"
               placeholder="product title"
               onChange={handleChange}
@@ -114,19 +158,21 @@ export const Dashboard = () => {
           <div>
             <input
               type="text"
-              name="desc"
-              placeholder="product descripton"
-              onChange={handleChange}
-              value={formdata.desc}
-            />
-          </div>
-          <div>
-            <input
-              type="text"
               name="categories"
               placeholder="product categories"
               onChange={handleChange}
               value={formdata.categories}
+              rows={8}
+            />
+          </div>
+          <div>
+            <textarea
+              type="text"
+              name="description"
+              placeholder="product description"
+              onChange={handleChange}
+              value={formdata.categories}
+              rows={8}
             />
           </div>
 
@@ -180,7 +226,24 @@ export const Dashboard = () => {
           <Dashboardnav />
         </div>
         <div className="right-section">
-          <div style={{ display: "flex", justifyContent: "end" }}>
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "space-around",
+              alignItems: "center",
+              padding: "1.5rem ",
+            }}
+          >
+            <input
+              type="search"
+              name=""
+              id=""
+              placeholder="search by price,name,categories etc"
+              onKeyUp={search}
+              onChange={(e) => {
+                setKeyword(e.target.value);
+              }}
+            />
             <button
               onClick={() => {
                 setOpen(true);
@@ -215,12 +278,14 @@ export const Dashboard = () => {
                       <h2 style={{ fontSize: "2rem" }}>
                         Titile :{products.title}
                       </h2>
-                      <p style={{ fontSize: "1.5rem" }}>
+                      <p style={{ fontSize: "1.4rem" }}>
                         Price {products.price}
                       </p>
                       <p
                         style={{
-                          fontSize: "1.3rem",
+                          fontSize: "1.2rem",
+                          textAlign: "justify",
+                          lineHeight: "1.8rem",
                         }}
                       >
                         {products.desc}
@@ -252,15 +317,31 @@ export const Dashboard = () => {
               <h2
                 style={{ textAlign: "center", fontSize: "4rem", color: "gray" }}
               >
-                No Products Availabe
+                No Products Avilable
               </h2>
             )}
           </div>
-          {allProducts.length > 0 && (
-            <div style={{ width: "70%", margin: " 2rem auto" }}>
-              <p style={{ fontSize: "1.6rem" }}>Page 1 out of 30</p>
-            </div>
-          )}
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "center",
+              marginTop: "4rem",
+            }}
+          >
+            <ReactPaginate
+              breakLabel="..."
+              nextLabel="next >"
+              onPageChange={changePage}
+              pageRangeDisplayed={pageCount}
+              containerClassName="pagination"
+              pageLinkClassName="page-num"
+              activeClassName="active"
+              pageCount={pageCount}
+              marginPagesDisplayed={2}
+              previousLabel="< previous"
+              renderOnZeroPageCount={null}
+            />
+          </div>
         </div>
       </div>
     </section>

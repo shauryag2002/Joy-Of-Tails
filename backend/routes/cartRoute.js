@@ -77,7 +77,7 @@ router.post("/", verifyToken, async (req, res, next) => {
       // oldCart.products=[...oldCart.products,req.body.products];
       const savedCart = await oldCart.save();
 
-      return res.status(200).json(savedCart);
+      return res.status(200).json({ success: true, savedCart });
     }
     const newCart = await Cart.create(req.body);
     const savedCart = await newCart.save();
@@ -130,6 +130,24 @@ router.delete("/:cartId", verifyToken, async (req, res, next) => {
   try {
     await Cart.findByIdAndDelete(req.params.cartId);
     return res.status(200).json({ message: "Cart deleted successfully" });
+  } catch (err) {
+    return res.status(500).json(err);
+  }
+});
+// DELETE A PRODUCT FROM CART
+router.delete("/:cartId/:pid", verifyToken, async (req, res, next) => {
+  try {
+    const cart = await Cart.findById(req.params.cartId);
+    let items = [];
+    for (let i = 0; i < cart.products.length; i++) {
+      if (cart.products[i].productId === req.params.pid) {
+      } else {
+        items.push(cart.products[i]);
+      }
+    }
+    cart.products = items;
+    await cart.save();
+    return res.status(200).json(cart);
   } catch (err) {
     return res.status(500).json(err);
   }

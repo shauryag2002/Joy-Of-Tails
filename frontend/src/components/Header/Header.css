@@ -67,6 +67,7 @@ header {
 /* .middle-nav-section */
 .nav-bar .middle-nav-section {
   flex: 3;
+  position: relative;
 }
 
 .nav-bar .middle-nav-section .nav-bar-search {
@@ -138,15 +139,39 @@ header {
   border-radius: 5px;
   top: 12.5%;
   right: 1%;
-  width: 15%;
-  height: 15vmax;
-  background-color: rgb(219, 213, 213);
+  width: 14%;
+  height: 10vmax;
+  background-color: rgba(246, 242, 242, 0.985);
   z-index: 9999;
   padding: 1rem;
 }
 .nav-bar .menu {
   display: none;
   cursor: pointer;
+}
+
+.searchData {
+  position: absolute;
+  padding: 1.4rem;
+  top: 102%;
+  left: 12.8%;
+  width: 74.8%;
+  height: 50vh;
+  background-color: rgb(250, 242, 242);
+  border-radius: 1px;
+  display: none;
+  z-index: 99;
+}
+.searchData li {
+  cursor: pointer;
+  padding: 1rem 0.8rem;
+  border-radius: 4px;
+}
+.searchData li:hover {
+  background-color: rgb(226, 222, 222);
+}
+.show-search {
+  display: block;
 }
 
 @media only screen and (max-width: 1040px) {

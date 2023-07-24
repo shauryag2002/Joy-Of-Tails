@@ -15,9 +15,15 @@ import {
 import "./Header.css";
 import { checkIsAdmin } from "../../Store/AdminSlice/Adminslice";
 import { useDispatch } from "react-redux";
+import axios from "axios";
 
 export const Header = () => {
   const [menu, setMenu] = useState(true);
+  const [show, setShow] = useState(false);
+  const [searchData, setSearchData] = useState({});
+
+  const [keyword, setKeyword] = useState([]);
+  const [products, setProducts] = useState([]);
   const [ok, setOk] = useState(false);
   const dispatch = useDispatch();
   const handleClick = () => {
@@ -27,7 +33,35 @@ export const Header = () => {
   const { isAdmin, isUser } = useSelector((state) => {
     return state.Admin;
   });
+  console.log(isAdmin, isUser);
+  const search = async () => {
+    const filterData = products.filter((item) => {
+      if (keyword === "") {
+        setShow(false);
+        return false;
+      } else {
+        setShow(true);
+      }
+      if (item.title.toLowerCase().includes(keyword.toLowerCase())) {
+        return item;
+      }
+      if (item.desc.toLowerCase().includes(keyword.toLowerCase())) {
+        return item;
+      }
+      if (item.categories.toLowerCase().includes(keyword.toLowerCase())) {
+        return item;
+      }
+    });
+    setSearchData([...filterData]);
+  };
 
+  const getAllProducts = async () => {
+    const { data } = await axios.get("http://localhost:4000/api/product");
+    setProducts([...data.product]);
+  };
+  useEffect(() => {
+    getAllProducts();
+  }, []);
   return (
     <header>
       <div className="contact-wrapper">
@@ -74,11 +108,31 @@ export const Header = () => {
               type="search"
               name=""
               placeholder="search anything for your pets"
+              onChange={(e) => {
+                setKeyword(e.target.value);
+              }}
+              onKeyUp={search}
             />
             <div className="search">
               <AiOutlineSearch />
             </div>
           </form>
+          <ul className={show ? `searchData show-search` : "searchData"}>
+            {searchData.length > 0
+              ? searchData.map((item) => {
+                  return (
+                    <li
+                      style={{ fontSize: "1.6rem", color: "gray" }}
+                      onClick={() => {
+                        setShow(false);
+                      }}
+                    >
+                      <Link to={`/products/${item._id}`}>{item.title}</Link>
+                    </li>
+                  );
+                })
+              : ""}
+          </ul>
         </div>
         <div className="right-nav-section">
           <div className="nav-icons">
@@ -106,12 +160,22 @@ export const Header = () => {
                     gap: "1.2rem",
                   }}
                 >
-                  <li>
-                    <NavLink to="/login">Login</NavLink>
-                  </li>
-                  <li>
-                    <NavLink to="/register">Register</NavLink>
-                  </li>
+                  {localStorage.getItem("token") ? (
+                    <li>
+                      <Link to="/profile">My Profile</Link>
+                    </li>
+                  ) : (
+                    <li>
+                      <NavLink to="/login">login</NavLink>
+                    </li>
+                  )}
+
+                  {!localStorage.getItem("token") && (
+                    <li>
+                      <NavLink to="/register">Register</NavLink>
+                    </li>
+                  )}
+
                   {isUser && (
                     <li>
                       <NavLink

@@ -38,13 +38,15 @@ router.put("/:id", verifyTokenAndAuthorization, async (req, res) => {
 router.delete("/:id", async (req, res, next) => {
   try {
     await User.findByIdAndDelete(req.params.id);
-    return res.status(200).json({ message: "User deleted successfully" });
+    return res
+      .status(200)
+      .json({ message: "User deleted successfully", success: true });
   } catch (err) {
     return res.status(500).json(err);
   }
 });
 //GET A USER
-router.get("/find/:id", verifyTokenAndAdmin, async (req, res) => {
+router.get("/find/:id", verifyToken, async (req, res) => {
   try {
     const user = await User.findById(req.params.id);
     const { password, ...others } = user._doc;
@@ -56,7 +58,8 @@ router.get("/find/:id", verifyTokenAndAdmin, async (req, res) => {
 //GET ALL USERS
 router.get("/", verifyTokenAndAdmin, async (req, res, next) => {
   const AllUsers = await User.find();
-  return res.status(200).json(AllUsers);
+  console.log(AllUsers);
+  return res.status(200).json({ success: true, AllUsers });
 });
 // GET USERS STATS
 router.get("/stats", verifyTokenAndAdmin, async (req, res) => {
