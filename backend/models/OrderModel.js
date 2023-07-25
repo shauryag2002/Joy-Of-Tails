@@ -7,14 +7,16 @@ const OrderSchema = new mongoose.Schema(
     products: [
       {
         productId: {
-          type: mongoose.Schema.Types.ObjectId,
-          ref: "User",
-          required: true,
+          type: String,
+          // required: true,
         },
         quantity: {
           type: Number,
           default: 1,
         },
+        img: Array,
+        name: String,
+        price: Number,
       },
     ],
     phoneNo: { type: Number },

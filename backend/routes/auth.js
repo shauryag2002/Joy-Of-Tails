@@ -5,7 +5,7 @@ const router = require("express").Router();
 const bcrypt = require("bcrypt");
 router.post("/register", async function (req, res) {
   const { username, email, password } = req.body;
-  console.log(req.body);
+  // console.log(req.body);
   if (!username || !email || !password)
     return res.status(401).json({ message: "Please enter all fields" });
 
@@ -18,7 +18,7 @@ router.post("/register", async function (req, res) {
       const savedUser = await register.save();
       res.status(201).json({ register, success: true });
     } catch (err) {
-      console.log(err);
+      // console.log(err);
       res.status(500).json({ error: err });
     }
   } else {
@@ -28,7 +28,7 @@ router.post("/register", async function (req, res) {
   }
 });
 router.post("/login", async (req, res) => {
-  console.log(req.body);
+  // console.log(req.body);
   let login = await User.findOne({ username: req.body.username }).select(
     "+password"
   );
@@ -37,7 +37,7 @@ router.post("/login", async (req, res) => {
     login = await User.findOne({ email: req.body.username }).select(
       "+password"
     );
-    console.log(login);
+    // console.log(login);
   }
   // if (!login) {
   //   return res.status(500).json({ error: "Wrong credentials", success: false });
@@ -56,7 +56,7 @@ router.post("/login", async (req, res) => {
           process.env.JWT_SECRET,
           { expiresIn: "3d" }
         );
-        console.log(accessToken);
+        // console.log(accessToken);
         return res.status(200).json({ ...others, accessToken, success: true });
       } else {
         return res

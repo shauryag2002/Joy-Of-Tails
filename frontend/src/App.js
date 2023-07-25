@@ -15,15 +15,12 @@ import { Productdetails } from "./Productsdetails/Productsdetails";
 import { Edit } from "./Edit/Edit";
 import Shipping from "./components/Cart/Shipping";
 import ConfirmOrder from "./components/Cart/ConfirmOrder";
-<<<<<<< HEAD
 import { Persional } from "./Profile/Persionalinfo/Persional";
 import { Userorder } from "./Profile/Order/Userorder";
 import { User } from "./Dashboard/User";
 import { Admin } from "./Dashboard/Admin";
 import { Featured } from "./Dashboard/Featured";
-=======
 import PaymentSuccess from "./PaymentSuccess/PaymentSuccess";
->>>>>>> efb89f5a453aaa6a4eb511c1322b58b2ad0ba617
 
 function App() {
   return (
@@ -52,13 +49,10 @@ function App() {
                   <Route path="/cart" element={<Cart />} />
                   <Route path="/shipping" element={<Shipping />} />
                   <Route path="/order/confirm" element={<ConfirmOrder />} />
-<<<<<<< HEAD
                   <Route path="/profile" element={<Persional />} />
                   <Route path="/userorder" element={<Userorder />} />
 
-=======
                   <Route path="/paymentsuccess" element={<PaymentSuccess />} />
->>>>>>> efb89f5a453aaa6a4eb511c1322b58b2ad0ba617
                   <Route path="*" element={<Error />} />
                 </Routes>
 

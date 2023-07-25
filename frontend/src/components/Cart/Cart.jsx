@@ -68,7 +68,7 @@ const Cart = () => {
         "Content-Type": "application/json",
       },
     });
-    console.log(res);
+    console.log(res.data);
     setCartItems(res.data);
   };
   useEffect(() => {
@@ -93,7 +93,7 @@ const Cart = () => {
   };
   return (
     <Fragment>
-      {cartItems[0]?.products?.length === 0 ? (
+      {cartItems?.length === 0 ? (
         <div className="emptyCart">
           <MdRemoveShoppingCart className="font" />
 
@@ -162,7 +162,7 @@ const Cart = () => {
               <div></div>
               <div className="cartGrossProfitBox">
                 <p>Gross Total</p>
-                <p>{`₹${cartItems[0].products.reduce(
+                <p>{`₹${cartItems[0]?.products.reduce(
                   (acc, item) => acc + item.quantity * item.price,
                   0
                 )}`}</p>

@@ -7,7 +7,7 @@ const {
 
 const router = require("express").Router();
 // CREATE
-router.post("/", verifyToken, async (req, res, next) => {
+router.post("/", async (req, res, next) => {
   if (!req.body.userId || !req.body.amount || !req.body.address) {
     return res
       .status(400)
@@ -22,7 +22,7 @@ router.post("/", verifyToken, async (req, res, next) => {
   }
 });
 // UPDATE
-router.put("/:id", verifyTokenAndAuthorization, async (req, res, next) => {
+router.put("/:id", verifyTokenAndAdmin, async (req, res, next) => {
   try {
     const order = await Order.findByIdAndUpdate(req.params.id, req.body, {
       new: true,

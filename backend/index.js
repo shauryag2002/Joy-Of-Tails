@@ -38,7 +38,7 @@ app.use("/api/product", productRoute);
 app.use("/api/order", orderRoute);
 app.use("/api/cart", cartRoute);
 app.use("/api/category", categoryRoute);
-app.use("/api/order", razorpayRoute);
+app.use("/api/razorpay", razorpayRoute);
 
 app.listen(process.env.PORT, () => {
   console.log(

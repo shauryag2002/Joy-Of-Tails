@@ -12,14 +12,34 @@ export const Order = () => {
         token: localStorage.getItem("token"),
       },
     });
-    setOrders(data);
+    const filteredOrders = data.filter((ord) => {
+      if (ord.status == "Complete") {
+      } else {
+        return ord;
+      }
+    });
+    setOrders(filteredOrders);
   };
 
-  const changeStatus = (e, id) => {};
-
-  React.useEffect(() => {
+  const changeStatus = async (e, orderId) => {
+    const res = await axios.put(
+      "http://localhost:4000/api/order/" + orderId,
+      {
+        status: e.target.value,
+      },
+      {
+        headers: {
+          token: localStorage.getItem("token"),
+          "content-type": "application/json",
+        },
+      }
+    );
     getOrders();
-  });
+  };
+
+  useEffect(() => {
+    getOrders();
+  }, []);
 
   return (
     <section className="dashboard-section">
@@ -63,8 +83,9 @@ export const Order = () => {
                             onChange={(e) => {
                               changeStatus(e, order._id);
                             }}
+                            value={order.status}
                           >
-                            <option value="Pendint">Pending</option>
+                            <option value="Pending">Pending</option>
                             <option value="Shipped">Shipped</option>
                             <option value="Complete">Complete</option>
                             <option value="Reject">Reject</option>
