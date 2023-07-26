@@ -21,6 +21,8 @@ import { User } from "./Dashboard/User";
 import { Admin } from "./Dashboard/Admin";
 import { Featured } from "./Dashboard/Featured";
 import PaymentSuccess from "./PaymentSuccess/PaymentSuccess";
+import ForgotPassword from "./ForgotPassword/ForgotPassword";
+import ResetPassword from "./ResetPassword/ResetPassword";
 
 function App() {
   return (
@@ -29,6 +31,8 @@ function App() {
         <Routes>
           <Route path="/register" element={<Register />} />
           <Route path="/login" element={<Login />} />
+          <Route path="/password/forgot" element={<ForgotPassword />} />
+          <Route path="/password/reset/:token" element={<ResetPassword />} />
           <Route
             path="/*"
             element={
@@ -51,7 +55,6 @@ function App() {
                   <Route path="/order/confirm" element={<ConfirmOrder />} />
                   <Route path="/profile" element={<Persional />} />
                   <Route path="/userorder" element={<Userorder />} />
-
                   <Route path="/paymentsuccess" element={<PaymentSuccess />} />
                   <Route path="*" element={<Error />} />
                 </Routes>

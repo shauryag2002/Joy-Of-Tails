@@ -6,6 +6,8 @@ import Cookies from "js-cookie";
 import "./Login.css";
 import { useDispatch } from "react-redux";
 import { checkIsAdmin, checkIsUser } from "../../Store/AdminSlice/Adminslice";
+import { auth, provider } from "../../firebase.js";
+import { signInWithPopup } from "firebase/auth";
 const Login = () => {
   const [user, setUser] = useState({ username: "", password: "" });
   const [error, setError] = useState("");
@@ -48,6 +50,58 @@ const Login = () => {
       console.log(err.response);
     }
   };
+  const handleGoogleFunc = async (data, password) => {
+    const data1 = data;
+    try {
+      const res = await fetch("http://localhost:4000/api/auth/googleAuth", {
+        method: "post",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          data: data1,
+          password,
+        }),
+      });
+      const data = await res.json();
+      console.log(data);
+      if (data) {
+        if (data.isAdmin) {
+          dispatch(checkIsAdmin(data.isAdmin));
+          navigate("/dashboard");
+        } else {
+          dispatch(checkIsAdmin(false));
+          navigate("/");
+        }
+      } else {
+        alert(data.message);
+      }
+      if (data.error) {
+        setError(res.data.error);
+      }
+      const userInfo = await data;
+      localStorage.setItem("token", userInfo.accessToken);
+      localStorage.setItem("id", userInfo._id);
+      localStorage.setItem("isAdmin", userInfo.isAdmin);
+      Cookies.set("token", userInfo.accessToken, { expires: 5 });
+      dispatch(checkIsUser(true));
+    } catch (err) {
+      console.log(err.response);
+    }
+  };
+  const handleGoogleSignIn = () => {
+    signInWithPopup(auth, provider)
+      .then((result) => {
+        const user1 = result;
+        const password = new Date().getTime().toString();
+        // console.log(user1);
+        // setUser({ ...user1, username: user1.email });
+        handleGoogleFunc(result, password);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
   return (
     <div className="login">
       {/* <div className="MainLogo">onlineBazaar</div> */}
@@ -70,7 +124,7 @@ const Login = () => {
               </div>
             </div>
             <div className="loginText">Sign in</div>
-            <div className="loginWithGoogle">
+            <div onClick={handleGoogleSignIn} className="loginWithGoogle">
               <div className="loginWithGoogleLink">
                 <img
                   src={GoogleLogo}
@@ -118,7 +172,9 @@ const Login = () => {
               </div>
             </div>
             <div className="forgetAndRemember">
-              <div className="forgetPass">Forgot Password</div>
+              <Link to={"/password/forgot"} className="forgetPass">
+                Forgot Password
+              </Link>
             </div>
             <div style={{ textAlign: "center" }}>
               <button className="loginButton">

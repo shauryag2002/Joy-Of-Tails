@@ -72,4 +72,44 @@ router.post("/login", async (req, res) => {
     return res.status(500).json({ err });
   }
 });
+router.post("/googleAuth", async (req, res) => {
+  try {
+    const { data, password: pass } = req.body;
+
+    const user = await User.findOne({ email: data.user.email });
+
+    if (user) {
+      const { password, ...others } = user._doc;
+      const accessToken = jwt.sign(
+        {
+          id: others._id,
+          isAdmin: others.isAdmin,
+        },
+        process.env.JWT_SECRET,
+        { expiresIn: "3d" }
+      );
+      return res.status(200).json({ ...others, accessToken, success: true });
+    } else {
+      const create = await User.create({
+        username: data.user.uid,
+        email: data.user.email,
+        password: pass,
+        image: data.user.photoURL,
+      });
+      await create.save();
+      const { password, ...others } = create._doc;
+      const accessToken = jwt.sign(
+        {
+          id: others._id,
+          isAdmin: others.isAdmin,
+        },
+        process.env.JWT_SECRET,
+        { expiresIn: "3d" }
+      );
+      return res.status(200).json({ ...others, accessToken, success: true });
+    }
+  } catch (err) {
+    return res.status(500).json(err);
+  }
+});
 module.exports = router;

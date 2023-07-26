@@ -191,7 +191,7 @@ export const Header = () => {
                         to="/register"
                         onClick={() => {
                           localStorage.clear();
-                          dispatch(false);
+                          // dispatch(false);
                         }}
                       >
                         logout
