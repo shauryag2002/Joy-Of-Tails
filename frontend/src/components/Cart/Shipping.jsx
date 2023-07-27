@@ -1,4 +1,5 @@
 import React, { Fragment, useState } from "react";
+import { useDispatch } from "react-redux";
 import "./Shipping.css";
 // import { useSelector, useDispatch } from "react-redux";
 // import { saveShippingInfo } from "../../actions/cartAction";
@@ -14,9 +15,10 @@ import { Country, State } from "country-state-city";
 // import { useAlert } from "react-alert";
 import CheckoutSteps from "./CheckoutSteps";
 import { Navigate, useLocation } from "react-router-dom";
+import { AddShipping } from "../../Store/ShipingSlice/ShipingSlice";
 
 const Shipping = () => {
-  // const dispatch = useDispatch();
+  const dispatch = useDispatch();
   // const alert = useAlert();
   // const { shippingInfo } = useSelector((state) => state.cart);
 
@@ -30,6 +32,16 @@ const Shipping = () => {
   const location = useLocation();
   const shippingSubmit = (e) => {
     e.preventDefault();
+    dispatch(
+      AddShipping({
+        address,
+        city,
+        state,
+        country,
+        pinCode,
+        phoneNo,
+      })
+    );
 
     if (phoneNo.length < 10 || phoneNo.length > 10) {
       // alert.error("Phone Number should be 10 digits Long");

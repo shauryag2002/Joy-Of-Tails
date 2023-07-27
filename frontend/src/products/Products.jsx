@@ -16,10 +16,13 @@ export const Products = () => {
   const [products1, setProducts1] = useState([]);
   const [categories, setCategories] = useState([]);
   const [ratings, setRatings] = useState(1);
-
   const [min, setMin] = useState(0);
   const [max, setMax] = useState(10000000);
-  const [filter, setFilter] = useState([]);
+  const [brand, setBrand] = useState([]);
+  const [isFilter, setIsFilter] = useState(false);
+  const [isProduct, setIsProduct] = useState(true);
+
+  const [filterProduct, setFilterProduct] = useState(false);
 
   const dispatch = useDispatch();
 
@@ -32,6 +35,8 @@ export const Products = () => {
       `http://localhost:4000/api/product?limit=${6}`
     );
     setAllProducts(data.product);
+    setBrand(data.product);
+
     // setBrand()
     setPageCount(data.pageCount);
     const paginationPage = [];
@@ -81,19 +86,18 @@ export const Products = () => {
     setCategories(data);
   };
   const filteredProducts = () => {
-<<<<<<< HEAD
     console.log(typeof ratings);
     if (ratings === "1") {
       window.location.reload();
     }
     const filter1 = products.filter((product) => {
-=======
-    const filter1 = products1.filter((product) => {
->>>>>>> efb89f5a453aaa6a4eb511c1322b58b2ad0ba617
-      return product.ratings >= ratings;
+      const filter1 = products1.filter((product) => {
+        return product.ratings >= ratings;
+      });
+      setAllProducts(filter1);
     });
-    setAllProducts(filter1);
   };
+
   const rangeFilter = () => {
     const filter1 = products1.filter((product) => {
       if (max == 0 && min == 0) return product;
@@ -106,30 +110,24 @@ export const Products = () => {
     console.log(filter1);
     setAllProducts(filter1);
   };
-<<<<<<< HEAD
 
   const brandSearch = (title) => {
     const filter = products.filter((prod) => {
       return prod.brand.toLowerCase().includes(title.toLowerCase());
     });
-    setAllProducts(filter);
+    setFilterProduct([...filter]);
+    setIsFilter(true);
+    setIsProduct(false);
   };
 
-=======
   useEffect(() => {
     filteredProducts();
   }, [ratings]);
->>>>>>> efb89f5a453aaa6a4eb511c1322b58b2ad0ba617
   useEffect(() => {
     getAllProducts();
     getCategories();
   }, []);
-<<<<<<< HEAD
-  useEffect(() => {
-    filteredProducts();
-  }, [ratings]);
-=======
->>>>>>> efb89f5a453aaa6a4eb511c1322b58b2ad0ba617
+
   return (
     <>
       <div className="product-wrapper">
@@ -210,8 +208,17 @@ export const Products = () => {
                 >
                   Brand
                 </h2>
+                <p
+                  onClick={() => {
+                    setIsFilter(false);
+                    setIsProduct(true);
+                  }}
+                >
+                  All
+                </p>
+
                 <ul className="brand">
-                  {products.map((prod) => {
+                  {brand.map((prod) => {
                     return (
                       <li
                         onClick={() => {
@@ -235,7 +242,8 @@ export const Products = () => {
               : "product-section-two"
           }
         >
-          {products && products.length > 0 ? (
+          {isProduct &&
+            products.length > 0 &&
             products.map((product) => {
               return (
                 <div className="products-section">
@@ -293,19 +301,68 @@ export const Products = () => {
                   </div>
                 </div>
               );
-            })
-          ) : (
-            <p
-              style={{
-                textAlign: "center",
-                fontSize: "5rem",
-                color: "gray",
-                marginTop: "2rem",
-              }}
-            >
-              No Products Avilable
-            </p>
-          )}
+            })}
+          {console.log(filterProduct)}
+          {isFilter &&
+            filterProduct.length > 0 &&
+            filterProduct.map((product) => {
+              return (
+                <div className="products-section">
+                  <div className="products-items">
+                    <Link to={`/products/${product._id}`}>
+                      <figure>
+                        <img
+                          src={`/uploads/${product.img[0]}`}
+                          style={{ width: "100%" }}
+                        />
+                      </figure>
+                      <h2 style={{ textAlign: "center", fontSize: "1.5rem" }}>
+                        {product.title}
+                      </h2>
+                      <p
+                        style={{
+                          textAlign: "center",
+                          fontSize: "1.2rem",
+                          fontWeight: "600",
+                          marginTop: "2rem",
+                        }}
+                      >
+                        Brand : {product.brand}
+                      </p>
+                    </Link>
+                    <div style={{ textAlign: "center", marginTop: "2rem" }}>
+                      <p>
+                        <Rating
+                          size={20}
+                          readonly
+                          initialValue={product.ratings}
+                        />{" "}
+                        || {product.numOfReviews} reviews
+                      </p>
+                    </div>
+
+                    <p
+                      style={{
+                        textAlign: "center",
+                        fontSize: "1.5rem",
+                        marginTop: "1rem",
+                        fontWeight: "700",
+                        color: "#044B9A",
+                      }}
+                    >
+                      ₹{product.price}
+                    </p>
+                    <button
+                      onClick={() => {
+                        addCart(product);
+                      }}
+                    >
+                      Add to Cart
+                    </button>
+                  </div>
+                </div>
+              );
+            })}
         </div>
       </div>
       <div style={{ display: "flex", justifyContent: "center" }}>

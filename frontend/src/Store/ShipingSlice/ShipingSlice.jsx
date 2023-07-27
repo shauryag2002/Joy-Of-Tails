@@ -7,7 +7,7 @@ const ShipingSlice = createSlice({
     city: "",
     state: "",
     country: "",
-    pincode: "",
+    pinCode: "",
     phoneNo: "",
   },
   reducers: {

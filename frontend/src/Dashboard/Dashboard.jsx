@@ -35,7 +35,7 @@ export const Dashboard = () => {
 
   const getProducts = async () => {
     const { data } = await axios.get("http://localhost:4000/api/product");
-    setAllProducts(data.product);
+    setAllProducts([...data.product]);
     setPageCount(data.pageCount);
   };
 
@@ -118,27 +118,27 @@ export const Dashboard = () => {
   };
 
   const search = () => {
-    console.log(keyword);
-    console.log(allProducts);
-    const filterData = allProducts.filter(async (item) => {
+    const filterData = allProducts.filter(async (items) => {
       if (keyword === "") {
-        window.location.reload();
+        return window.location.reload();
       }
-      if (item.title.toLowerCase().includes(keyword.toLowerCase())) {
-        return item;
+      if (items.title.includes(keyword)) {
+        return items;
       }
-      if (item.desc.toLowerCase().includes(keyword.toLowerCase())) {
-        return item;
+      if (items.desc.toLowerCase().includes(keyword.toLowerCase())) {
+        return items;
       }
-      if (item.categories.toLowerCase().includes(keyword.toLowerCase())) {
-        return item;
+      if (items.categories.toLowerCase().includes(keyword.toLowerCase())) {
+        return items;
       }
-      if (item.price.toString().toLowerCase().includes(keyword.toLowerCase())) {
-        return item;
+      if (
+        items.price.toString().toLowerCase().includes(keyword.toLowerCase())
+      ) {
+        return items;
       }
     });
-
-    setAllProducts(filterData);
+    console.log(filterData);
+    setAllProducts([...filterData]);
   };
 
   if (ok) {

@@ -20,13 +20,14 @@
   gap: 0.4rem;
 }
 
-.product-wrapper .filter-section .filter ul li {
+.product-wrapper .filter-section .filter ul li,
+p {
   font-size: 1.3rem;
   font-weight: 500;
   color: rgb(54, 52, 52);
   text-transform: capitalize;
   cursor: pointer;
-  padding: 0.2rem 0;
+  padding: 0.3rem 0;
 }
 
 .product-wrapper .product-section {

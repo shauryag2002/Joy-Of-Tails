@@ -21,7 +21,6 @@ export const Header = () => {
   const [menu, setMenu] = useState(true);
   const [show, setShow] = useState(false);
   const [searchData, setSearchData] = useState([]);
-
   const [keyword, setKeyword] = useState([]);
   const [products, setProducts] = useState([]);
   const [ok, setOk] = useState(false);
@@ -63,7 +62,7 @@ export const Header = () => {
   };
 
   const getAllProducts = async () => {
-    const { data } = await axios.get("http://localhost:4000/api/product");
+    const { data } = await axios.get("/api/product");
     setProducts([...data.product]);
   };
   useEffect(() => {

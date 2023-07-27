@@ -5,9 +5,16 @@ import CheckoutSteps from "./CheckoutSteps";
 import "./ConfirmOrder.css";
 import { Link } from "react-router-dom";
 import axios from "axios";
+import { useSelector } from "react-redux/es/hooks/useSelector";
+
 // import { Typography } from "@material-ui/core";
 
 const ConfirmOrder = ({ history }) => {
+  // const [details,setDetails] = useState({})
+  const data = useSelector((state) => {
+    return state.Shipping;
+  });
+
   //   const { shippingInfo, cartItems } = useSelector((state) => state.cart);
   //   const { user } = useSelector((state) => state.user);
   const [shippingInfo, setShippingInfo] = useState({
@@ -140,24 +147,24 @@ const ConfirmOrder = ({ history }) => {
       <div className="confirmOrderPage">
         <div>
           <div className="confirmshippingArea">
-            <div>Shipping Info</div>
+            <div style={{ fontSize: "2rem" }}>Shipping Info</div>
             <div className="confirmshippingAreaBox">
               <div>
                 <p>Name:</p>
-                <span>{user.name}</span>
+                <span>{data.name}</span>
               </div>
               <div>
                 <p>Phone:</p>
-                <span>{shippingInfo.phoneNo}</span>
+                <span>{data.phoneNo}</span>
               </div>
               <div>
                 <p>Address:</p>
-                <span>{address}</span>
+                <span>{data.address}</span>
               </div>
             </div>
           </div>
           <div className="confirmCartItems">
-            <div>Your Cart Items:</div>
+            <div style={{ fontSize: "2rem" }}>Your Cart Items:</div>
             <div className="confirmCartItemsContainer">
               {cartItems &&
                 cartItems[0].products.map((item) => (
