@@ -42,7 +42,7 @@ export const CustomerCarousel = ({ images, arrows, dots }) => {
                 <img src={img.imgName} alt="" />
               </figure>
               <div className="customer-content">
-                <h2 style={{ fontSize: "4rem", lineHeight: "6rem" }}>
+                <h2 style={{ fontSize: "5.5rem", lineHeight: "7rem" }}>
                   Views Of Our Happy Customers
                 </h2>
                 <p>

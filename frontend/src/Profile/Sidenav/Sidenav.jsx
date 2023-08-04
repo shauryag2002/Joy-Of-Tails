@@ -1,15 +1,40 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { Modal } from "antd";
 import axios from "axios";
 import { ProfileLayout } from "../ProfileLayout";
 
 export const Sidenav = ({ user }) => {
+  const [userInfo, setUserInfo] = useState({});
   const [formdata, setFormData] = useState({
-    username: "",
-    email: "",
-    password: "",
+    name: user.username,
+    email: user.email,
   });
+
+  const getUserInfo = async () => {
+    const { data } = await axios.get(
+      `http://localhost:4000/api/user/find/${localStorage.getItem("id")}`,
+      {
+        headers: {
+          token: localStorage.getItem("token"),
+        },
+      }
+    );
+    if (data) {
+      setUserInfo({ ...data });
+      setFormData({
+        ...formdata,
+        username: data.username,
+        email: data.email,
+      });
+    }
+  };
+
+  const [formdatatwo, setFormDatatwo] = useState({
+    oldpassword: "",
+    newpassword: "",
+  });
+
   const [image, setImage] = useState("");
   const [ok, setOk] = useState(false);
   const [open, setOpen] = useState(false);
@@ -22,6 +47,13 @@ export const Sidenav = ({ user }) => {
     });
   };
 
+  const handlePassword = (e) => {
+    setFormDatatwo({
+      ...formdatatwo,
+      [e.target.name]: e.target.value,
+    });
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     const { data } = await axios.put(
@@ -29,7 +61,6 @@ export const Sidenav = ({ user }) => {
       {
         username: formdata.username,
         email: formdata.email,
-        password: formdata.password,
       },
       {
         headers: {
@@ -37,6 +68,7 @@ export const Sidenav = ({ user }) => {
         },
       }
     );
+
     if (data.success) {
       setOk(true);
       setOpen(false);
@@ -49,6 +81,32 @@ export const Sidenav = ({ user }) => {
       window.location.reload();
     }
   };
+
+  const handlePasswordSubmit = async (e) => {
+    e.preventDefault();
+
+    const { data } = await axios.put(
+      `http://localhost:4000/api/user/${localStorage.getItem("id")}`,
+      {
+        oldpassword: formdatatwo.oldpassword,
+        newpassword: formdatatwo.newpassword,
+      },
+      {
+        headers: {
+          token: localStorage.getItem("token"),
+        },
+      }
+    );
+    if (data.success) {
+      alert("update successfully");
+    } else {
+      alert(data.message);
+    }
+  };
+
+  useEffect(() => {
+    getUserInfo();
+  }, []);
   return (
     <>
       <Modal
@@ -80,16 +138,6 @@ export const Sidenav = ({ user }) => {
 
           <div>
             <input
-              type="password"
-              name="password"
-              placeholder="enter your new password or old "
-              onChange={handleChange}
-              value={formdata.password}
-            />
-          </div>
-
-          <div>
-            <input
               type="file"
               multiple
               name="img"
@@ -113,14 +161,27 @@ export const Sidenav = ({ user }) => {
         onOk={() => setOpen2(false)}
         onCancel={() => setOpen2(false)}
       >
-        <form className="form-wrapper" onSubmit={handleSubmit} method="post">
+        <form
+          className="form-wrapper"
+          onSubmit={handlePasswordSubmit}
+          method="post"
+        >
           <div>
             <input
               type="text"
-              name="password"
+              name="oldpassword"
+              placeholder="enter your old password"
+              onChange={handlePassword}
+              value={formdatatwo.oldpassword}
+            />
+          </div>
+          <div>
+            <input
+              type="text"
+              name="newpassword"
               placeholder="enter your new password"
-              onChange={handleChange}
-              value={formdata.brand}
+              onChange={handlePassword}
+              value={formdatatwo.newpassword}
             />
           </div>
           <div>
@@ -145,14 +206,14 @@ export const Sidenav = ({ user }) => {
         <ul>
           <li>
             <Link className="links" to="/profile">
-              Persionla Information
+              Persional Info
             </Link>
           </li>
-          <li>
+          {/* <li>
             <Link className="links" to="/userorder">
               Billing & Payments
             </Link>
-          </li>
+          </li> */}
           <li>
             <Link className="links" to="/userorder">
               Your Orders

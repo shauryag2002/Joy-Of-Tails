@@ -3,6 +3,7 @@ import AdminSlice from "./AdminSlice/Adminslice";
 import ShipingSlice from "./ShipingSlice/ShipingSlice";
 import { persistStore, persistReducer } from "redux-persist";
 import storage from "redux-persist/lib/storage";
+import cartSlice from "./CartSlice/cartslice";
 const persistConfig = {
   key: "root",
   storage,
@@ -11,6 +12,7 @@ const persistConfig = {
 const rootReducer = combineReducers({
   Admin: AdminSlice,
   Shipping: ShipingSlice,
+  Cart: cartSlice,
 });
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);

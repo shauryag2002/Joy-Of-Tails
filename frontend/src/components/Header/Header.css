@@ -1,6 +1,7 @@
 header {
   background-color: tomato;
   font-family: sans-serif;
+  position: relative;
 }
 
 .active {
@@ -51,7 +52,7 @@ header {
   margin: auto;
   display: flex;
   align-items: center;
-  font-family: sans-serif;
+  font-family: "Readex Pro";
 }
 
 /* .left-nav-section */
@@ -67,7 +68,6 @@ header {
 /* .middle-nav-section */
 .nav-bar .middle-nav-section {
   flex: 3;
-  position: relative;
 }
 
 .nav-bar .middle-nav-section .nav-bar-search {
@@ -98,7 +98,7 @@ header {
 .nav-bar .right-nav-section-mobile {
   background-color: rgb(242, 244, 242);
   transform: translateX(100%);
-  display: flex;
+  display: none;
   flex-direction: column;
   gap: 0.8rem;
   align-items: center;
@@ -115,11 +115,14 @@ header {
 
 .nav-bar .right-nav-section {
   flex: 1;
+  position: relative;
 }
 
 .nav-bar .right-nav-section .nav-icons {
   display: flex;
-  font-size: 1.6rem;
+  font-size: 1.4rem;
+  line-height: 1.4rem;
+  text-transform: uppercase;
   font-weight: 500;
   align-items: center;
   justify-content: center;
@@ -137,13 +140,13 @@ header {
   display: block;
   position: absolute;
   border-radius: 5px;
-  top: 12.5%;
-  right: 1%;
-  width: 14%;
+  top: 90.5%;
+  left: 40%;
+  width: 65%;
   height: 10vmax;
   background-color: rgba(246, 242, 242, 0.985);
   z-index: 9999;
-  padding: 1rem;
+  padding: 0.8rem 1rem;
 }
 .nav-bar .menu {
   display: none;
@@ -153,14 +156,15 @@ header {
 .searchData {
   position: absolute;
   padding: 1.4rem;
-  top: 102%;
-  left: 12.8%;
-  width: 74.8%;
-  height: 50vh;
+  top: 90%;
+  left: 20%;
+  width: 65%;
+  height: 70vh;
   background-color: rgb(250, 242, 242);
   border-radius: 1px;
   display: none;
   z-index: 9999;
+  overflow: auto;
 }
 .searchData li {
   cursor: pointer;
@@ -201,16 +205,17 @@ header {
     gap: 0;
     flex-direction: column;
     font-size: 1.3rem;
-    height: 125px;
+    /* height: 125px; */
   }
   .contact-wrapper .contact {
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     gap: 0.8rem;
   }
   .contact-wrapper .contact .contact-icons {
     display: flex;
     align-items: center;
+    font-size: 0.8rem;
   }
 
   .contact-wrapper .contact .contact-icons button {
@@ -219,7 +224,7 @@ header {
     border: none;
     border-radius: 20px;
     color: white;
-    font-size: 1rem;
+    font-size: 0.8rem;
     font-weight: 600;
   }
   .nav-bar .middle-nav-section .nav-bar-search input {
@@ -269,10 +274,13 @@ header {
     left: 0;
     transition: all 0.3s linear;
     transform: translateX(0%);
+    z-index: 999999;
   }
   .searchData {
-    width: 100%;
-    left: 0;
-    height: fit-content;
+    width: 95%;
+    height: 80vh;
+    left: 2%;
+    top: 95%;
+    border-radius: 4px;
   }
 }

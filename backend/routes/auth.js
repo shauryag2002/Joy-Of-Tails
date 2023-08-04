@@ -5,10 +5,9 @@ const router = require("express").Router();
 const bcrypt = require("bcrypt");
 router.post("/register", async function (req, res) {
   const { username, email, password } = req.body;
-  console.log(req.body);
+  // console.log(req.body);
   if (!username || !email || !password)
     return res.status(401).json({ message: "Please enter all fields" });
-
   const userExist = await User.findOne({
     $or: [{ username: username }, { email: email }],
   });
@@ -18,7 +17,7 @@ router.post("/register", async function (req, res) {
       const savedUser = await register.save();
       res.status(201).json({ register, success: true });
     } catch (err) {
-      console.log(err);
+      // console.log(err);
       res.status(500).json({ error: err });
     }
   } else {
@@ -28,7 +27,7 @@ router.post("/register", async function (req, res) {
   }
 });
 router.post("/login", async (req, res) => {
-  console.log(req.body);
+  // console.log(req.body);
   let login = await User.findOne({ username: req.body.username }).select(
     "+password"
   );
@@ -37,7 +36,7 @@ router.post("/login", async (req, res) => {
     login = await User.findOne({ email: req.body.username }).select(
       "+password"
     );
-    console.log(login);
+    // console.log(login);
   }
   // if (!login) {
   //   return res.status(500).json({ error: "Wrong credentials", success: false });
@@ -56,7 +55,7 @@ router.post("/login", async (req, res) => {
           process.env.JWT_SECRET,
           { expiresIn: "3d" }
         );
-        console.log(accessToken);
+        // console.log(accessToken);
         return res.status(200).json({ ...others, accessToken, success: true });
       } else {
         return res
@@ -70,6 +69,46 @@ router.post("/login", async (req, res) => {
     }
   } catch (err) {
     return res.status(500).json({ err });
+  }
+});
+router.post("/googleAuth", async (req, res) => {
+  try {
+    const { data, password: pass } = req.body;
+
+    const user = await User.findOne({ email: data.user.email });
+
+    if (user) {
+      const { password, ...others } = user._doc;
+      const accessToken = jwt.sign(
+        {
+          id: others._id,
+          isAdmin: others.isAdmin,
+        },
+        process.env.JWT_SECRET,
+        { expiresIn: "3d" }
+      );
+      return res.status(200).json({ ...others, accessToken, success: true });
+    } else {
+      const create = await User.create({
+        username: data.user.uid,
+        email: data.user.email,
+        password: pass,
+        image: data.user.photoURL,
+      });
+      await create.save();
+      const { password, ...others } = create._doc;
+      const accessToken = jwt.sign(
+        {
+          id: others._id,
+          isAdmin: others.isAdmin,
+        },
+        process.env.JWT_SECRET,
+        { expiresIn: "3d" }
+      );
+      return res.status(200).json({ ...others, accessToken, success: true });
+    }
+  } catch (err) {
+    return res.status(500).json(err);
   }
 });
 module.exports = router;

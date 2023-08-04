@@ -1,31 +1,57 @@
 import React, { useEffect, useState } from "react";
 import { Rating } from "react-simple-star-rating";
-import { Link, useParams } from "react-router-dom";
+import { Link, NavLink, useParams } from "react-router-dom";
+import { Modal } from "antd";
 import "./index.css";
 import axios from "axios";
 import Cookies from "js-cookie";
 
 export const Productdetails = () => {
   const [image, setImage] = useState([]);
+  const [rating, setRating] = useState(0);
+  const [comment, setComment] = useState("");
   const [error, setError] = useState(true);
   const [products, setProducts] = useState([]);
   const [allProducts, setAllProducts] = useState([]);
   const [index, setIndex] = useState(0);
+  const [count, setCount] = useState(1);
+  const [open, setOpen] = useState(false);
+
   const params = useParams();
 
   const getAllProducts = async () => {
-    const { data } = await axios.get(`http://localhost:4000/api/product`);
+    const { data } = await axios.get(`/api/product`);
     setAllProducts(data.product);
   };
 
   const getProducts = async () => {
-    const { data } = await axios.get(
-      `http://localhost:4000/api/product/find/${params.id}`
-    );
+    const { data } = await axios.get(`/api/product/find/${params.id}`);
     setImage(data.product.img);
     setProducts(data.product);
     if (data.success) {
       getAllProducts();
+    }
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const { data } = await axios.post(
+      `http://localhost:4000/api/product/review/${localStorage.getItem("id")}/${
+        params.id
+      }`,
+      {
+        user: localStorage.getItem("id"),
+        rating,
+        comment,
+      },
+      {
+        headers: {
+          token: localStorage.getItem("token"),
+        },
+      }
+    );
+    if (data.success) {
+      setOpen(false);
     }
   };
 
@@ -42,13 +68,13 @@ export const Productdetails = () => {
 
   const addCart = async (product) => {
     const { data } = await axios.post(
-      "http://localhost:4000/api/cart",
+      "/api/cart",
       {
         userId: localStorage.getItem("id"),
         products: [
           {
             productId: product._id,
-            quantity: 1,
+            quantity: count,
             img: product.img,
             name: product.title,
             price: product.price,
@@ -66,12 +92,84 @@ export const Productdetails = () => {
     }
   };
 
+  const incQuantity = async (cartId, quan, productId) => {
+    const jwtToken = localStorage.getItem("token");
+    if (quan > count) {
+      setCount(count + 1);
+      const res = await fetch(`http://localhost:4000/api/cart/${cartId}`, {
+        method: "PUT",
+        headers: {
+          token: jwtToken,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          userId: localStorage.getItem("id"),
+          products: [{ productId: productId, quantity: quan + 1 }],
+        }),
+      });
+      const data = await res.json();
+    } else {
+      alert("quantity is enough");
+    }
+    // setCartItems(data);
+    // setOk(true);
+  };
+
+  const descQuantity = async (cartId, quan, productId) => {
+    const jwtToken = localStorage.getItem("token");
+    if (count > 1) {
+      setCount(count - 1);
+      const res = await fetch(`http://localhost:4000/api/cart/${cartId}`, {
+        method: "PUT",
+        headers: {
+          token: jwtToken,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          userId: localStorage.getItem("id"),
+          products: [{ productId: productId, quantity: quan - 1 }],
+        }),
+      });
+      const data = await res.json();
+
+      // setCartItems(data);
+    }
+  };
+  const handleRating = (number) => {
+    setRating(number);
+  };
+
   useEffect(() => {
     getProducts();
   }, [allProducts]);
 
   return (
     <>
+      <Modal
+        title="Form"
+        centered
+        open={open}
+        onOk={() => setOpen(false)}
+        onCancel={() => setOpen(false)}
+      >
+        <form className="form-wrapper" onSubmit={handleSubmit} method="post">
+          <Rating size={20} initialValue={rating} onClick={handleRating} />
+          <div>
+            <textarea
+              name="comment"
+              placeholder="comment"
+              value={comment}
+              rows={5}
+              onChange={(e) => {
+                setComment(e.target.value);
+              }}
+            />
+          </div>
+          <div>
+            <button className="modal-btn">Submit Review</button>
+          </div>
+        </form>
+      </Modal>
       <div className="product-details-section">
         <div className="left">
           <div className="left-container">
@@ -157,10 +255,32 @@ export const Productdetails = () => {
             <div className="btn-container">
               <div>
                 <div className="cartInput" style={{ marginLeft: "2rem" }}>
-                  <button onClick={() => {}}>-</button>
-                  <input type="number" value={1} readOnly />
-                  <button onClick={() => {}}>+</button>
+                  <button
+                    onClick={() => {
+                      descQuantity(
+                        products._id,
+                        products.Stock,
+                        products.productId
+                      );
+                    }}
+                  >
+                    -
+                  </button>
+                  <input type="number" value={count} readOnly />
+                  <button
+                    onClick={() => {
+                      console.log(products);
+                      incQuantity(
+                        products._id,
+                        products.Stock,
+                        products.productId
+                      );
+                    }}
+                  >
+                    +
+                  </button>
                 </div>
+
                 <button
                   className="btn"
                   onClick={() => {
@@ -169,8 +289,15 @@ export const Productdetails = () => {
                 >
                   Add to Cart
                 </button>
+                <button
+                  className="btn"
+                  onClick={() => {
+                    setOpen(true);
+                  }}
+                >
+                  submit review
+                </button>
               </div>
-              <button className="btn">Buy Now</button>
             </div>
           </div>
         </div>
@@ -179,7 +306,7 @@ export const Productdetails = () => {
       {/* <h2 style={{ textAlign: "center", fontSize: "2rem" }}>
         Related Products
       </h2> */}
-      <div className="product-section- product-section-second">
+      <div className="product-section product-section-second">
         {allProducts.length > 0 &&
           allProducts.map((product) => {
             if (
@@ -196,9 +323,7 @@ export const Productdetails = () => {
                           style={{ width: "100%" }}
                         />
                       </figure>
-                      <h2 style={{ textAlign: "justify", fontSize: "1.5rem" }}>
-                        {product.title}
-                      </h2>
+                      <h2>{product.title}</h2>
                       <p
                         style={{
                           textAlign: "center",

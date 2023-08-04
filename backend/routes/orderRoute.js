@@ -7,7 +7,7 @@ const {
 
 const router = require("express").Router();
 // CREATE
-router.post("/", verifyToken, async (req, res, next) => {
+router.post("/", async (req, res, next) => {
   if (!req.body.userId || !req.body.amount || !req.body.address) {
     return res
       .status(400)
@@ -22,7 +22,7 @@ router.post("/", verifyToken, async (req, res, next) => {
   }
 });
 // UPDATE
-router.put("/:id", verifyTokenAndAuthorization, async (req, res, next) => {
+router.put("/:id", verifyTokenAndAdmin, async (req, res, next) => {
   try {
     const order = await Order.findByIdAndUpdate(req.params.id, req.body, {
       new: true,
@@ -42,11 +42,13 @@ router.delete("/:id", verifyTokenAndAuthorization, async (req, res, next) => {
     return res.status(500).json(err);
   }
 });
+
 // GET ALL ORDERS --ADMIN
 router.get("/", verifyTokenAndAdmin, async (req, res, next) => {
   try {
-    const getOrders = await Order.find();
-    return res.status(200).json(getOrders);
+    const getOrders = await Order.find().sort({ createdAt: -1 });
+    console.log(getOrders);
+    return res.status(200).json({ getOrders });
   } catch (err) {
     return res.status(500).json(err);
   }
@@ -54,7 +56,9 @@ router.get("/", verifyTokenAndAdmin, async (req, res, next) => {
 // GET USERS ORDER
 router.get("/all/:id", verifyTokenAndAuthorization, async (req, res, next) => {
   try {
-    const allUserOrders = await Order.find({ userId: req.params.id });
+    const allUserOrders = await Order.find({ userId: req.params.id }).sort({
+      createdAt: -1,
+    });
     return res.status(200).json(allUserOrders);
   } catch (err) {
     return res.status(500).json(err);

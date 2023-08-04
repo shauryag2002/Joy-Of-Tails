@@ -93,3 +93,22 @@
   font-size: 1.5rem;
   font-weight: 550;
 }
+.user-table td:last-child {
+  border: 1px solid rgb(122, 230, 95);
+}
+.user-table td:nth-child(6) {
+  border: none;
+}
+
+@media only screen and (max-width: 768px) {
+  .profile-wrapper {
+    display: flex;
+    flex-direction: column;
+  }
+  .profile-content ul {
+    margin-top: 2rem;
+    display: grid;
+    gap: 2rem;
+    grid-template-columns: 1fr;
+  }
+}

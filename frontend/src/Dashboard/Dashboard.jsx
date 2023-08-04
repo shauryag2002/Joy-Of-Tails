@@ -10,10 +10,15 @@ import { Link } from "react-router-dom";
 export const Dashboard = () => {
   const [open, setOpen] = useState(false);
   const [show, setShow] = useState(false);
+  const [add, setAdd] = useState([]);
+
   const [pageCount, setPageCount] = useState("");
   const [keyword, setKeyword] = useState("");
   const [ok, setOK] = useState(false);
   const [allProducts, setAllProducts] = useState([]);
+  const [filterProducts, setFilterProducts] = useState([]);
+  const [isFilter, setIsFilter] = useState(false);
+  const [isProducts, setIsProducts] = useState(true);
   const [image, setImage] = useState("");
   const [sellingprice, setSelling] = useState(0);
   const [actualsellingprice, setActualSelling] = useState(0);
@@ -34,7 +39,7 @@ export const Dashboard = () => {
   });
 
   const getProducts = async () => {
-    const { data } = await axios.get("http://localhost:4000/api/product");
+    const { data } = await axios.get(`/api/product?limit=${12}`);
     setAllProducts([...data.product]);
     setPageCount(data.pageCount);
   };
@@ -52,7 +57,7 @@ export const Dashboard = () => {
 
   const changePage = async ({ selected }) => {
     const { data } = await axios.get(
-      `http://localhost:4000/api/product?page=${selected + 1} & limit=${6}`
+      `/api/product?page=${selected + 1} & limit=${12}`
     );
     setAllProducts(data.product);
   };
@@ -65,6 +70,8 @@ export const Dashboard = () => {
       formData.append("img", image[i]);
     }
     formData.append("title", formdata.title);
+    formData.append("Stock", formdata.stock);
+
     formData.append("brand", formdata.brand);
     formData.append("animalType", formdata.animalType);
     formData.append("foodType", formdata.foodType);
@@ -76,15 +83,12 @@ export const Dashboard = () => {
     formData.append("sellingPrice", formdata.mrp - sellingprice);
     formData.append("discount", formdata.discount);
 
-    const { data } = await axios.post(
-      "http://localhost:4000/api/product",
-      formData,
-      {
-        headers: {
-          token: Cookies.get("token"),
-        },
-      }
-    );
+    const { data } = await axios.post("/api/product", formData, {
+      headers: {
+        token: Cookies.get("token"),
+      },
+    });
+    console.log(data);
     setFormData({
       brand: "",
       title: "",
@@ -97,20 +101,18 @@ export const Dashboard = () => {
     setOpen(false);
     if (data.success) {
       setOK(true);
+      alert("Product created Successfully");
     }
   };
 
   const deleteProduct = async (id) => {
     const val = window.confirm("Are you Sure");
     if (val) {
-      const { data } = await axios.delete(
-        `http://localhost:4000/api/product/${id}`,
-        {
-          headers: {
-            token: Cookies.get("token"),
-          },
-        }
-      );
+      const { data } = await axios.delete(`/api/product/${id}`, {
+        headers: {
+          token: Cookies.get("token"),
+        },
+      });
       if (data.success) {
         setOK(true);
       }
@@ -118,27 +120,42 @@ export const Dashboard = () => {
   };
 
   const search = () => {
-    const filterData = allProducts.filter(async (items) => {
+    const filterData = allProducts.filter((items) => {
       if (keyword === "") {
-        return window.location.reload();
+        setIsFilter(false);
+        setIsProducts(true);
+        return allProducts;
       }
-      if (items.title.includes(keyword)) {
+      if (items.title.toLowerCase().includes(keyword.toLowerCase())) {
+        setIsFilter(true);
+        setIsProducts(false);
         return items;
       }
       if (items.desc.toLowerCase().includes(keyword.toLowerCase())) {
+        setIsFilter(true);
+        setIsProducts(false);
         return items;
       }
       if (items.categories.toLowerCase().includes(keyword.toLowerCase())) {
+        setIsFilter(true);
+        setIsProducts(false);
         return items;
       }
       if (
         items.price.toString().toLowerCase().includes(keyword.toLowerCase())
       ) {
+        setIsFilter(true);
+        setIsProducts(false);
         return items;
       }
     });
     console.log(filterData);
-    setAllProducts([...filterData]);
+    setFilterProducts([...filterData]);
+  };
+
+  const addMore = () => {
+    console.log("first");
+    setAdd([...add, { value: "", price: "" }]);
   };
 
   if (ok) {
@@ -152,9 +169,10 @@ export const Dashboard = () => {
         open={open}
         onOk={() => setOpen(false)}
         onCancel={() => setOpen(false)}
+        width={"70%"}
       >
         <form className="form-wrapper" onSubmit={handleSubmit} method="post">
-          <div>
+          <div className="form-content">
             <input
               type="text"
               name="brand"
@@ -162,8 +180,6 @@ export const Dashboard = () => {
               onChange={handleChange}
               value={formdata.brand}
             />
-          </div>
-          <div>
             <input
               type="text"
               name="title"
@@ -172,7 +188,8 @@ export const Dashboard = () => {
               value={formdata.title}
             />
           </div>
-          <div>
+
+          <div className="form-content">
             <input
               type="text"
               name="categories"
@@ -181,7 +198,22 @@ export const Dashboard = () => {
               value={formdata.categories}
               rows={8}
             />
+            <input
+              type="text"
+              name="animalType"
+              placeholder="animaltype"
+              onChange={handleChange}
+              value={formdata.animaltype}
+            />
+            <input
+              type="text"
+              name="color"
+              placeholder="product color"
+              onChange={handleChange}
+              value={formdata.color}
+            />
           </div>
+
           <div>
             <textarea
               type="text"
@@ -192,26 +224,7 @@ export const Dashboard = () => {
               rows={8}
             />
           </div>
-
-          <div>
-            <input
-              type="text"
-              name="color"
-              placeholder="product color"
-              onChange={handleChange}
-              value={formdata.color}
-            />
-          </div>
-          <div>
-            <input
-              type="text"
-              name="animalType"
-              placeholder="animaltype"
-              onChange={handleChange}
-              value={formdata.animaltype}
-            />
-          </div>
-          <div>
+          <div className="form-content">
             <input
               type="text"
               name="gramPerQuantity"
@@ -219,9 +232,14 @@ export const Dashboard = () => {
               onChange={handleChange}
               value={formdata.gramperquantity}
             />
-          </div>
+            {/* <input
+                  type="text"
+                  name=""
+                  id=""
+                  style={{ width: "30%" }}
+                  placeholder="price"
+                /> */}
 
-          <div>
             <input
               type="text"
               name="foodType"
@@ -229,9 +247,53 @@ export const Dashboard = () => {
               onChange={handleChange}
               value={formdata.foodtype}
             />
-          </div>
+            <input
+              type="file"
+              multiple
+              name="img"
+              placeholder="product image"
+              onChange={(e) => {
+                setImage(e.target.files);
+              }}
+            />
 
-          <div>
+            {/* <button
+                  type="button"
+                  style={{ width: "30%" }}
+                  onClick={addMore}
+                >
+                  Add More
+                </button> */}
+          </div>
+          {/* {add.length > 0 &&
+                add.map((e) => {
+                  return (
+                    <div
+                      style={{
+                        display: "flex",
+                        gap: "1rem",
+                        marginTop: "0.8rem",
+                      }}
+                    >
+                      <input
+                        type="text"
+                        name="gramPerQuantity"
+                        placeholder="gramperquantity"
+                        onChange={handleChange}
+                        value={formdata.gramperquantity}
+                      />
+                      <input
+                        type="text"
+                        name=""
+                        id=""
+                        style={{ width: "30%" }}
+                        placeholder="price"
+                      />
+                    </div>
+                  );
+                })} */}
+
+          <div className="form-content">
             <input
               type="text"
               name="stock"
@@ -239,8 +301,6 @@ export const Dashboard = () => {
               onChange={handleChange}
               value={formdata.stock}
             />
-          </div>
-          <div>
             <input
               type="text"
               name="mrp"
@@ -249,8 +309,8 @@ export const Dashboard = () => {
               value={formdata.mrp}
             />
           </div>
-          <div>
-            <p>Dicount in %</p>
+          <div className="form-content">
+            <p style={{ width: "20%" }}>Dicount in %</p>
             <input
               type="text"
               name="discount"
@@ -263,25 +323,12 @@ export const Dashboard = () => {
                 );
               }}
             />
-          </div>
-          <div>
-            <p>Seeling Price</p>
+            <p style={{ width: "20%" }}>Seeling Price</p>
             <input
               type="text"
               name="sellingprice"
               placeholder="sellingprice "
               value={formdata.mrp - sellingprice}
-            />
-          </div>
-          <div>
-            <input
-              type="file"
-              multiple
-              name="img"
-              placeholder="product image"
-              onChange={(e) => {
-                setImage(e.target.files);
-              }}
             />
           </div>
 
@@ -316,6 +363,7 @@ export const Dashboard = () => {
             />
             <button
               onClick={() => {
+                window.document.body.classList.add("bg-blur");
                 setOpen(true);
               }}
               style={{
@@ -331,9 +379,9 @@ export const Dashboard = () => {
               Create
             </button>
           </div>
-          {allProducts.length < 0 && <h2>No Products</h2>}
+          {/* {allProducts.length < 0 && <h2>No Products</h2>} */}
           <div className="items-wrapper">
-            {allProducts.length > 0 ? (
+            {isProducts && allProducts.length > 0 ? (
               allProducts.map((products) => {
                 return (
                   <div className="items">
@@ -346,19 +394,12 @@ export const Dashboard = () => {
                         padding: "0 7rem",
                       }}
                     >
-                      <h2 style={{ fontSize: "1.8rem" }}>{products.title}</h2>
+                      <h2>{products.title}</h2>
                       <p style={{ fontSize: "1.4rem", fontWeight: "600" }}>
                         ₹ {products.price}
                       </p>
                     </div>
-                    <div
-                      style={{
-                        display: "flex",
-                        gap: "2rem",
-                        justifyContent: "center",
-                        marginTop: "2rem",
-                      }}
-                    >
+                    <div className="btn-container">
                       <Link to={`/edit/${products._id}`}>
                         <button>Edit</button>
                       </Link>
@@ -377,10 +418,46 @@ export const Dashboard = () => {
               <h2
                 style={{ textAlign: "center", fontSize: "4rem", color: "gray" }}
               >
-                Loading....
+                {isProducts && "loading....."}
               </h2>
             )}
           </div>
+          <div className="items-wrapper">
+            {isFilter &&
+              filterProducts.map((products) => {
+                return (
+                  <div className="items">
+                    <img src={`/uploads/${products.img[0]}`} />
+                    <div
+                      style={{
+                        display: "flex",
+                        flexDirection: "column",
+                        gap: "1.5rem",
+                        padding: "0 7rem",
+                      }}
+                    >
+                      <h2>{products.title}</h2>
+                      <p style={{ fontSize: "1.4rem", fontWeight: "600" }}>
+                        ₹ {products.price}
+                      </p>
+                    </div>
+                    <div className="btn-container">
+                      <Link to={`/edit/${products._id}`}>
+                        <button>Edit</button>
+                      </Link>
+                      <button
+                        onClick={() => {
+                          deleteProduct(products._id);
+                        }}
+                      >
+                        Delete
+                      </button>
+                    </div>
+                  </div>
+                );
+              })}
+          </div>
+
           <div
             style={{
               display: "flex",
@@ -388,19 +465,36 @@ export const Dashboard = () => {
               marginTop: "4rem",
             }}
           >
-            <ReactPaginate
-              breakLabel="..."
-              nextLabel="next >"
-              onPageChange={changePage}
-              pageRangeDisplayed={pageCount}
-              containerClassName="pagination"
-              pageLinkClassName="page-num"
-              activeClassName="active"
-              pageCount={pageCount}
-              marginPagesDisplayed={2}
-              previousLabel="< previous"
-              renderOnZeroPageCount={null}
-            />
+            {isProducts && (
+              <ReactPaginate
+                breakLabel="..."
+                nextLabel="next >"
+                onPageChange={changePage}
+                pageRangeDisplayed={pageCount}
+                containerClassName="pagination"
+                pageLinkClassName="page-num"
+                activeClassName="active"
+                pageCount={pageCount}
+                marginPagesDisplayed={2}
+                previousLabel="< previous"
+                renderOnZeroPageCount={null}
+              />
+            )}
+            {isFilter && (
+              <ReactPaginate
+                breakLabel="..."
+                nextLabel="next >"
+                onPageChange={changePage}
+                pageRangeDisplayed={pageCount}
+                containerClassName="pagination"
+                pageLinkClassName="page-num"
+                activeClassName="active"
+                pageCount={pageCount}
+                marginPagesDisplayed={2}
+                previousLabel="< previous"
+                renderOnZeroPageCount={null}
+              />
+            )}
           </div>
         </div>
       </div>

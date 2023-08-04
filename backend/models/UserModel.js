@@ -54,7 +54,7 @@ userSchema.pre("save", async function (next) {
 
 userSchema.methods.comparePassword = async function (candidatePassword) {
   const user = this;
-  return await bcrypt.compare(candidatePassword, user.password);
+  return await bcrypt.compare(candidatePassword, this.password);
 };
 userSchema.methods.getResetPasswordToken = function () {
   // Generating Token

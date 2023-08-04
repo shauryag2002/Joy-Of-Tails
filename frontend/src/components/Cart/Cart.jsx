@@ -5,23 +5,18 @@ import "./Cart.css";
 import { Link } from "react-router-dom";
 import CartItemCard from "./CartItemCard";
 import axios from "axios";
+import { useDispatch, useSelector } from "react-redux";
+import { checkCart } from "../../Store/CartSlice/cartslice";
+
 const Cart = () => {
   const [ok, setOk] = useState(false);
-  const [cartItems, setCartItems] = useState([
-    {
-      products: [
-        {
-          name: "product 1",
-          img: [
-            "https://cdn.shopify.com/s/files/1/0565/8021/0861/files/Frame_10976_1600x.png?v=1685180179",
-          ],
-          quantity: 1,
-          price: 6000,
-        },
-      ],
-    },
-  ]);
+  const [count, setCount] = useState(0);
+  const dispatch = useDispatch();
+  const [cartItems, setCartItems] = useState([]);
+  const [cartItems2, setCartItems2] = useState({});
+
   const incQuantity = async (cartId, quan, productId) => {
+    console.log(count);
     const jwtToken = localStorage.getItem("token");
     const res = await fetch(`http://localhost:4000/api/cart/${cartId}`, {
       method: "PUT",
@@ -57,10 +52,8 @@ const Cart = () => {
       // setCartItems(data);
     }
   };
-  const [count, setCount] = useState(0);
   const CartItemFun = async () => {
     const id = localStorage.getItem("id");
-    // console.log(id);
     const jwtToken = localStorage.getItem("token");
     const res = await axios.get(`http://localhost:4000/api/cart/find/${id}`, {
       headers: {
@@ -68,16 +61,22 @@ const Cart = () => {
         "Content-Type": "application/json",
       },
     });
-    console.log(res);
-    setCartItems(res.data);
+    if (res.data.success) {
+      if (res.data.cart) {
+        setCartItems([...res.data.cart.products]);
+        setCartItems2({ ...res.data.cart });
+        localStorage.setItem("cartLength", res.data.cart.products.length);
+      }
+    }
   };
+
   useEffect(() => {
     CartItemFun();
   }, []);
 
-  if (ok) {
-    return <Cart />;
-  }
+  // if (ok) {
+  //   return <Cart />;
+  // }
   const deleteCartItems = async (cartId, pid) => {
     const { data } = await axios.delete(
       `http://localhost:4000/api/cart/${cartId}/${pid}`,
@@ -93,12 +92,12 @@ const Cart = () => {
   };
   return (
     <Fragment>
-      {cartItems[0]?.products?.length === 0 ? (
+      {cartItems?.length === 0 ? (
         <div className="emptyCart">
           <MdRemoveShoppingCart className="font" />
 
           <div className="font">No Product in Your Cart</div>
-          <Link to="/products" className="font">
+          <Link to="/products/all" className="font">
             View Products
           </Link>
         </div>
@@ -111,24 +110,25 @@ const Cart = () => {
               <p>Subtotal</p>
             </div>
 
-            {cartItems[0] &&
-              cartItems[0]?.products?.map((item) => (
+            {cartItems.length > 0 &&
+              cartItems?.map((item) => (
                 <div className="cartContainer" key={item._id}>
                   <CartItemCard
                     item={item}
                     deleteCartItems={deleteCartItems}
-                    cartId={cartItems[0]._id}
+                    cartId={cartItems2._id}
                   />
+
                   <div className="cartInput">
                     <button
                       onClick={() => {
                         // decreaseQuantity(item.product, item.quantity)
                         descQuantity(
-                          cartItems[0]._id,
+                          cartItems._id,
                           item.quantity,
                           item.productId
                         );
-                        setCount(count + 1);
+                        setCount(item.quantity + 1);
                       }}
                     >
                       -
@@ -136,16 +136,9 @@ const Cart = () => {
                     <input type="number" value={item.quantity} readOnly />
                     <button
                       onClick={() => {
-                        //     increaseQuantity(
-                        //       item.product,
-                        //       item.quantity,
-                        //       item.stock
-                        incQuantity(
-                          cartItems[0]._id,
-                          item.quantity,
-                          item.productId
-                        );
-                        setCount(count + 1);
+                        incQuantity(cartItems._id, item.Stock, item.productId);
+                        setCount(item.quantity);
+                        // setCount(count + 1);
                         //     )
                       }}
                     >
@@ -162,7 +155,7 @@ const Cart = () => {
               <div></div>
               <div className="cartGrossProfitBox">
                 <p>Gross Total</p>
-                <p>{`₹${cartItems[0].products.reduce(
+                <p>{`₹${cartItems?.reduce(
                   (acc, item) => acc + item.quantity * item.price,
                   0
                 )}`}</p>

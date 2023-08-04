@@ -32,7 +32,6 @@ export const Persional = () => {
         <ul>
           <li>{user.username}</li>
           <li>{user.email}</li>
-          <li>{user.username}</li>
         </ul>
       </div>
     </ProfileLayout>

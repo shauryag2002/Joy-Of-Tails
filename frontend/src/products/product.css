@@ -4,8 +4,19 @@
 
 .product-wrapper .filter-section {
   flex: 1;
+  position: sticky;
+  top: 5%;
+  left: 0%;
 }
-.product-wrapper .filter-section .filter {
+.product-wrapper .filter-section .filter-show {
+  width: 95%;
+  margin: 0.6rem auto;
+  border-radius: 5px;
+  border: 1px solid rgb(204, 203, 203);
+  height: fit-content;
+  padding: 0 1rem;
+}
+.product-wrapper .filter-section .show {
   width: 95%;
   margin: 0.6rem auto;
   border-radius: 5px;
@@ -13,14 +24,33 @@
   height: 100vh;
   padding: 0 1rem;
 }
+.product-wrapper .filter-section .filter .filter-show {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 2rem;
+  margin-top: 1rem;
+}
+.show-icon {
+  display: none;
+}
 
-.product-wrapper .filter-section .filter ul {
+.product-wrapper .filter-section .filter-show ul {
   display: flex;
   flex-direction: column;
   gap: 0.4rem;
 }
 
-.product-wrapper .filter-section .filter ul li,
+.product-wrapper .filter-section .filter-show ul li,
+p {
+  font-size: 1.3rem;
+  font-weight: 500;
+  color: rgb(54, 52, 52);
+  text-transform: capitalize;
+  cursor: pointer;
+  padding: 0.3rem 0;
+}
+.product-wrapper .filter-section .show ul li,
 p {
   font-size: 1.3rem;
   font-weight: 500;
@@ -81,9 +111,9 @@ p {
 }
 
 .products-section .products-items h2 {
-  font-size: 1.2rem;
+  font-size: 1.3rem;
   font-weight: 700;
-  margin-left: 1rem;
+  margin-top: 2rem;
 }
 
 .products-section .products-items p {
@@ -92,15 +122,17 @@ p {
 }
 .product-section .products-items button {
   background-color: orange;
-  width: 50%;
+  width: 55%;
   margin: 2rem auto;
   border-radius: 50px;
   outline: none;
-  padding: 0.8rem 4rem;
+  padding: 1rem 4rem;
   border: none;
-  font-size: 1.5rem;
+  font-size: 1.3rem;
+  cursor: pointer;
   font-weight: 700;
 }
+
 .pagination {
   display: flex;
   gap: 1.4rem;
@@ -119,9 +151,12 @@ p {
 
 .ratings-input {
   width: 95%;
+  height: 1px;
 }
 .number-input {
   width: 34%;
+  outline: none;
+  border: 1px solid rgb(198, 193, 193);
 }
 .inp {
   margin-left: 10px;
@@ -134,6 +169,12 @@ p {
     display: flex;
     flex-direction: column;
   }
+  .product-wrapper .filter-section {
+    flex: 1;
+    position: sticky;
+    top: 0%;
+    left: 0%;
+  }
   .product-wrapper .product-section {
     flex: 4;
     display: grid;
@@ -143,11 +184,27 @@ p {
     row-gap: 5rem;
     column-gap: 2rem;
   }
-  .product-wrapper .filter-section .filter {
-    height: max-content;
-    display: flex;
+  .product-wrapper .filter-section .filter-show {
+    height: 25px;
+    /* background-color: red; */
+    overflow: hidden;
+  }
+  .show-icon {
+    display: block;
+  }
+  .product-wrapper .filter-section .show {
+    overflow: visible;
+    height: 70vh;
+  }
 
-    /* background-color: black; */
+  .product-wrapper .filter-section .show ul li,
+  p {
+    font-size: 1.3rem;
+    font-weight: 500;
+    color: rgb(54, 52, 52);
+    text-transform: capitalize;
+    cursor: pointer;
+    padding: 0.3rem 0;
   }
 }
 
@@ -166,15 +223,28 @@ p {
     flex: 4;
     display: grid;
     padding: 0.5rem 1rem;
-    grid-template-columns: repeat(1, 1fr);
-    padding: 2rem 0;
-    row-gap: 5rem;
-    column-gap: 2rem;
+    grid-template-columns: repeat(2, 1fr);
+    padding: 1rem 0;
+    row-gap: 1rem;
+    column-gap: 0.5rem;
+  }
+  .product-wrapper .product-section h2 {
+    font-size: 0.9rem;
+    text-align: justify;
+    padding: 0 1rem;
+  }
+  .product-wrapper .product-section p {
+    font-size: 0.2rem;
+  }
+  .product-wrapper .product-section button {
+    font-size: 0.9rem;
+    width: 90%;
   }
 
   .product-wrapper .products-section .products-items figure {
     width: 90%;
-    height: 400px;
+    height: 240px;
+    margin-top: 0;
     padding: 5rem 2rem;
   }
   .product-wrapper .products-section .products-items figure img {

@@ -12,14 +12,37 @@ export const Order = () => {
         token: localStorage.getItem("token"),
       },
     });
-    setOrders(data);
+    const filteredOrders = data.getOrders.filter((ord) => {
+      if (ord.status == "Complete") {
+        return;
+      } else {
+        return ord;
+      }
+    });
+    setOrders(filteredOrders);
   };
 
-  const changeStatus = (e, id) => {};
-
-  React.useEffect(() => {
+  const changeStatus = async (e, orderId) => {
+    const res = await axios.put(
+      "http://localhost:4000/api/order/" + orderId,
+      {
+        status: e.target.value,
+        // time: new Date().toLocaleTimeString(),
+        // date: new Date().toLocaleDateString(),
+      },
+      {
+        headers: {
+          token: localStorage.getItem("token"),
+          "content-type": "application/json",
+        },
+      }
+    );
     getOrders();
-  });
+  };
+
+  useEffect(() => {
+    getOrders();
+  }, []);
 
   return (
     <section className="dashboard-section">
@@ -41,6 +64,7 @@ export const Order = () => {
                   <th>Price</th>
                   <th>Status</th>
                   <th>Date</th>
+                  <th>Time</th>
                   <th>Action</th>
                 </tr>
               </thead>
@@ -51,11 +75,16 @@ export const Order = () => {
                       <tr>
                         <td>{index}</td>
                         <td>{order._id}</td>
-                        <td>{order.products.length}</td>
+                        <td>{order.name}</td>
                         <td>{order.address}</td>
                         <td>₹ {order.amount}</td>
                         <td>{order.status}</td>
-                        <td>{order.createdAt}</td>
+                        <td>
+                          {new Date(order.createdAt).toLocaleDateString()}
+                        </td>
+                        <td>
+                          {new Date(order.createdAt).toLocaleTimeString()}
+                        </td>
                         <td>
                           <select
                             name="status"
@@ -63,8 +92,9 @@ export const Order = () => {
                             onChange={(e) => {
                               changeStatus(e, order._id);
                             }}
+                            value={order.status}
                           >
-                            <option value="Pendint">Pending</option>
+                            <option value="Pending">Pending</option>
                             <option value="Shipped">Shipped</option>
                             <option value="Complete">Complete</option>
                             <option value="Reject">Reject</option>

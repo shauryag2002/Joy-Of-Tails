@@ -4,7 +4,9 @@ import { Link } from "react-router-dom";
 import axios from "axios";
 
 const CartItemCard = ({ item, cartId, deleteCartItems }) => {
-  console.log(item.productId);
+  // console.log(item);
+  console.log(cartId);
+  // console.log();
 
   return (
     <div className="CartItemCard">

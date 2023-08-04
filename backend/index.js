@@ -12,6 +12,8 @@ const cartRoute = require("./routes/cartRoute");
 const razorpayRoute = require("./routes/razorpay");
 const categoryRoute = require("./routes/categoryRoute");
 const featureCatRoute = require("./routes/featuredCatRoute");
+const getAllStatsRouter = require("./routes/allstatroute");
+const serviceRouter = require("./routes/service");
 const app = express();
 
 app.use(express.static("public"));
@@ -38,7 +40,10 @@ app.use("/api/product", productRoute);
 app.use("/api/order", orderRoute);
 app.use("/api/cart", cartRoute);
 app.use("/api/category", categoryRoute);
-app.use("/api/order", razorpayRoute);
+app.use("/api/razorpay", razorpayRoute);
+app.use("/api/service", serviceRouter);
+
+app.use("/api/getallstats", getAllStatsRouter);
 
 app.listen(process.env.PORT, () => {
   console.log(

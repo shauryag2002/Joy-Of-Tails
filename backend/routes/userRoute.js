@@ -11,28 +11,40 @@ const sendEmail = require("../utils/sendEmail");
 const router = require("express").Router();
 // UPDATE A USER
 router.put("/:id", verifyTokenAndAuthorization, async (req, res) => {
-  const { password, ...others } = req.body;
-  console.log(req.body);
+  const { ...others } = req.body;
+  const { oldpassword, newpassword } = req.body;
   try {
-    if (password) {
-      bcrypt.hash(password, 10, async function (err, hashedPassword) {
-        if (err) {
-          return res.status(500).send("Error hashing password");
-        } else {
-          const user = await User.findByIdAndUpdate(
-            req.params.id,
-            { ...others, password: hashedPassword },
-            {
-              new: true,
-            }
-          );
-          const savedUser = await user.save();
-          return res.status(200).json({ success: true, savedUser });
-        }
-      });
+    if (oldpassword) {
+      const userExist = await User.findById(req.params.id).select("+password");
+      const isMatch = await userExist.comparePassword(oldpassword);
+      if (isMatch) {
+        await User.findByIdAndUpdate(
+          req.params.id,
+          { password: await bcrypt.hash(newpassword, 10) },
+          {
+            new: true,
+          }
+        );
+        return res.json({ success: true, message: "password updated" });
+      } else {
+        return res.json({
+          success: false,
+          message: "old password is incorrect",
+        });
+      }
     }
+    const user = await User.findByIdAndUpdate(
+      req.params.id,
+      { ...others },
+      {
+        new: true,
+      }
+    );
+
+    const savedUser = await user.save();
+    return res.status(200).json({ success: true, savedUser });
   } catch (err) {
-    return res.status(500).json(err);
+    return res.status(500).json({ err });
   }
 });
 //DELETE A USER
@@ -89,35 +101,30 @@ router.get("/stats", verifyTokenAndAdmin, async (req, res) => {
 });
 router.route("/password/forgot").post(async (req, res, next) => {
   const user = await User.findOne({ email: req.body.email });
-
   if (!user) {
-    return res.status(500).send({ error: "User not found" });
+    res.status(400).json({ error: "User not found", message: false });
   }
 
   // Get ResetPassword Token
-  const resetToken = user.getResetPasswordToken();
-
-  await user.save({ validateBeforeSave: false });
-
-  const resetPasswordUrl = `${req.protocol}://${req.get(
-    "host"
-  )}/api/user/password/reset/${resetToken}`;
-
-  const message = `Your password reset token is :- \n\n ${resetPasswordUrl} \n\nIf you have not requested this email then, please ignore it.`;
 
   try {
-    await sendEmail({
-      email: user.email,
-      subject: `onlineBazaar Password Recovery`,
-      message,
-    });
+    if (user) {
+      const resetToken = user.getResetPasswordToken();
+      await user.save({ validateBeforeSave: false });
+      const resetPasswordUrl = `${req.protocol}://localhost:3000/password/reset/${resetToken}`;
 
-    res.status(200).json({
-      message: `Email sent to ${user.email} successfully`,
-    });
+      const message = `Your password reset token is :- \n\n ${resetPasswordUrl} \n\nIf you have not requested this email then, please ignore it.`;
+      await sendEmail({
+        email: user.email,
+        subject: `onlineBazaar Password Recovery`,
+        message,
+      });
+      return res.status(200).json({
+        message: `Email sent to ${user.email} successfully`,
+      });
+    }
   } catch (error) {
-    user.resetPasswordToken = undefined;
-    user.resetPasswordExpire = undefined;
+    console.log(error);
 
     await user.save({ validateBeforeSave: false });
 

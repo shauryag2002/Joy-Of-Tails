@@ -2,9 +2,9 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import "./Home.css";
 import { Rating } from "react-simple-star-rating";
-
 import { PiDogFill } from "react-icons/pi";
 import { FaCat } from "react-icons/fa";
+import { FaArrowCircleDown } from "react-icons/fa";
 import { MyCarousel } from "../Carousel/Carousel";
 import banner2 from "../Asset/banner2.jpg";
 import { IoMdMailOpen } from "react-icons/io";
@@ -14,6 +14,7 @@ import cat from "../Asset/cat.webp";
 import girl from "../Asset/girl.webp";
 import { Link, NavLink, useParams } from "react-router-dom";
 import { CustomerCarousel } from "../Carousel/CustomerCarousel";
+import WebFont from "webfontloader";
 
 const images = [
   {
@@ -50,18 +51,39 @@ const customerImages = [
 export const Home = () => {
   const params = useParams();
   const [products, setAllProducts] = useState([]);
+  const [service, setService] = useState([]);
+
+  const [brand, setBrands] = useState([]);
+  const [category, setCategory] = useState([]);
   const [featuredImage, setFeaturedImage] = useState([]);
 
   const getAllProducts = async () => {
-    const { data } = await axios.get(
-      `http://localhost:4000/api/product?limit=${6}`
-    );
+    // const { data } = await axios.get(`/api/product?limit=${6}`);
+    const { data } = await axios.get(`/api/product`);
+    const res = await axios.get(`/api/service`);
+    const newService = [
+      ...new Map(
+        res.data.details.map((item) => [item["title"], item])
+      ).values(),
+    ];
+
+    setService(newService);
     setAllProducts(data.product);
+    const newData = [
+      ...new Map(data.product.map((item) => [item["brand"], item])).values(),
+    ];
+    const newCategory = [
+      ...new Map(
+        data.product.map((item) => [item["categories"], item])
+      ).values(),
+    ];
+    setCategory(newCategory);
+    setBrands(newData);
   };
 
   const addCart = async (product) => {
     const { data } = await axios.post(
-      "http://localhost:4000/api/cart",
+      "/api/cart",
       {
         userId: localStorage.getItem("id"),
         products: [
@@ -86,7 +108,7 @@ export const Home = () => {
   };
 
   const getFeaturedImage = async () => {
-    const { data } = await axios.get("http://localhost:4000/api/featured");
+    const { data } = await axios.get("/api/featured");
     if (data) {
       setFeaturedImage(data.img);
     }
@@ -127,6 +149,21 @@ export const Home = () => {
                     flexDirection: "column",
                     gap: "1.2rem",
                     fontSize: "1.2rem",
+                  }}
+                >
+                  <li>Cateogry1</li>
+                  <li>Cateogry1</li>
+                  <li>Cateogry1</li>
+                </ul>
+              </div>
+              <div>
+                <h2>Food</h2>
+                <ul
+                  style={{
+                    display: "flex",
+                    flexDirection: "column",
+                    fontSize: "1.2rem",
+                    gap: "1.2rem",
                   }}
                 >
                   <li>Cateogry1</li>
@@ -201,8 +238,59 @@ export const Home = () => {
               </div>
             </div>
           </li>
+          <li>
+            <FaCat /> Breed
+            <div className="sub-menu">
+              <div>
+                <h2>Food</h2>
+                <ul
+                  style={{
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: "1rem",
+                    fontSize: "1.2rem",
+                  }}
+                >
+                  <li>Cateogry1</li>
+                  <li>Cateogry1</li>
+                  <li>Cateogry1</li>
+                </ul>
+              </div>
+              <div>
+                <h2>Food</h2>
+                <ul
+                  style={{
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: "1.2rem",
+                    fontSize: "1.2rem",
+                  }}
+                >
+                  <li>Cateogry1</li>
+                  <li>Cateogry1</li>
+                  <li>Cateogry1</li>
+                </ul>
+              </div>
+              <div>
+                <h2>Food</h2>
+                <ul
+                  style={{
+                    display: "flex",
+                    flexDirection: "column",
+                    fontSize: "1.2rem",
+                    gap: "1.2rem",
+                  }}
+                >
+                  <li>Cateogry1</li>
+                  <li>Cateogry1</li>
+                  <li>Cateogry1</li>
+                </ul>
+              </div>
+            </div>
+          </li>
         </ul>
       </section>
+
       <section
         style={{
           width: "95%",
@@ -212,27 +300,64 @@ export const Home = () => {
         <MyCarousel
           images={featuredImage}
           desktop={1}
-          dots={true}
-          arrow={false}
+          dots={false}
+          arrow={true}
           mobile={1}
         />
       </section>
+
       <section>
-        <div className="food-section">
-          <div className="dog-wrapper">
-            <h2>Dogs</h2>
-            <figure className="dog">
-              <img src={dog} alt="" />
-            </figure>
-          </div>
-          <div className="cat-wrapper">
-            <h2>Cats</h2>
-            <figure className="cat">
-              <img src={cat} alt="" />
-            </figure>
+        <div className="food-category">
+          <h2>Popular Categories</h2>
+
+          <div className="food-category-wrapper">
+            {category.length > 0 &&
+              category.map((e) => {
+                return (
+                  <div className="category-item">
+                    <Link to={`products/${e.categories}`}>
+                      <h2>{e.categories}</h2>
+                      <figure>
+                        <img src={`/uploads/${e.img[0]}`} alt="" />
+                      </figure>
+                    </Link>
+                  </div>
+                );
+              })}
           </div>
         </div>
       </section>
+
+      <section>
+        <div className="food-category food-brand">
+          <h2>Popular Brands</h2>
+
+          <div className="food-category-wrapper brand-wrapper">
+            {brand.length > 0 &&
+              brand.map((e) => {
+                return (
+                  <div className="category-item food-item">
+                    <Link to={`products/${e.brand}`}>
+                      <h2>{e.brand}</h2>
+                      <div>
+                        <figure>
+                          <img src={`/uploads/${e.img[1]}`} alt="" />
+                        </figure>
+                      </div>
+                    </Link>
+                  </div>
+                );
+              })}
+          </div>
+        </div>
+      </section>
+
+      {/* <section>
+        <div style={{ width: "95%", margin: "auto", marginTop: "2rem" }}>
+          <MyCarousel images={images} imageNumber={6} mobileImageNumber={2} />
+        </div>
+      </section> */}
+
       <section>
         <div className="service-section">
           <figure>
@@ -281,6 +406,7 @@ export const Home = () => {
           </div>
         </div>
       </section>
+
       <section>
         <div className="icon-wrapper">
           <div>
@@ -290,6 +416,7 @@ export const Home = () => {
                 textAlign: "center",
                 fontSize: "4rem",
                 marginTop: "1rem",
+                fontFamily: "Fredoka",
               }}
             >
               Dogs
@@ -302,6 +429,7 @@ export const Home = () => {
                 textAlign: "center",
                 fontSize: "4rem",
                 marginTop: "1rem",
+                fontFamily: "Fredoka",
               }}
             >
               Cat
@@ -309,30 +437,29 @@ export const Home = () => {
           </div>
         </div>
       </section>
+
       <section>
         <div className="product">
           {products && products.length > 0 ? (
-            products.map((product) => {
+            products.slice(0, 6).map((product) => {
               return (
                 <div className="product-items">
-                  <Link to={`/products/${product._id}`}>
-                    <figure>
-                      <img
-                        src={`/uploads/${product.img[0]}`}
-                        style={{ width: "100%", height: "100%" }}
-                      />
-                    </figure>
-                    <h2
-                      style={{
-                        textAlign: "justify",
-                        fontSize: "1.5rem",
-                        marginTop: "4rem",
-                      }}
-                    >
-                      {product.title}
-                    </h2>
+                  <Link to={`/productsdetails/${product._id}`}>
+                    <div className="img-container">
+                      <figure>
+                        <img
+                          src={`/uploads/${product.img[0]}`}
+                          style={{
+                            objectFit: "cover",
+                            width: "100%",
+                            height: "100%",
+                          }}
+                        />
+                      </figure>
+                    </div>
+                    <h2>{product.title}</h2>
                   </Link>
-                  <div style={{ textAlign: "center", marginTop: "2rem" }}>
+                  <div style={{ textAlign: "center", marginTop: "0.4rem" }}>
                     <p>
                       <Rating size={20} readonly /> || 109 reviews
                     </p>
@@ -342,7 +469,7 @@ export const Home = () => {
                     style={{
                       textAlign: "center",
                       fontSize: "1.5rem",
-                      marginTop: "1rem",
+                      marginTop: "0.6rem",
                       fontWeight: "700",
                       color: "#044B9A",
                     }}
@@ -354,7 +481,7 @@ export const Home = () => {
                       addCart(product);
                     }}
                   >
-                    Add to Cart
+                    Add Cart
                   </button>
                 </div>
               );
@@ -373,12 +500,15 @@ export const Home = () => {
           )}
         </div>
       </section>
+
       <section>
         <div className="sleeping-dog"></div>
       </section>
+
       <section>
         <CustomerCarousel images={customerImages} dots={true} arrows={false} />
       </section>
+
       <section>
         <div className="discount">
           <div className="discount-item">
@@ -397,6 +527,38 @@ export const Home = () => {
       <section className="our-service">
         <h2>Our Services</h2>
         <div className="ourservice-section">
+          {service.length > 0 &&
+            service.map((item) => {
+              console.log(item);
+              return (
+                <Link to={`/service/${item.title}`}>
+                  <div className="service-items">
+                    <div>
+                      <figure>
+                        <img src={`/uploads/${item.image}`} />
+                      </figure>
+                      <h2>{item.title}</h2>
+                    </div>
+                  </div>
+                </Link>
+              );
+            })}
+
+          {/* <div className="service-items">
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                flexDirection: "column",
+              }}
+            >
+              <figure>
+                <img src="https://www.hartz.com/wp-content/uploads/2022/03/dog-benefits-health-1.jpg" />
+              </figure>
+              <h2>Broading</h2>
+            </div>
+          </div>
+
           <div className="service-items">
             <div
               style={{
@@ -408,91 +570,9 @@ export const Home = () => {
               <figure>
                 <img src="https://www.hartz.com/wp-content/uploads/2022/03/dog-benefits-health-1.jpg" />
               </figure>
-              <h2
-                style={{
-                  fontSize: "3.5rem",
-                  textAlign: "center",
-                  fontWeight: "900",
-                  marginTop: "1.5rem",
-                  fontFamily: "Fredoka",
-                }}
-              >
-                Dog's Grooming
-              </h2>
+              <h2>Veterinary Care</h2>
             </div>
-          </div>
-          <div className="service-items">
-            <div
-              style={{
-                display: "flex",
-                alignItems: "center",
-                flexDirection: "column",
-              }}
-            >
-              <figure>
-                <img src="https://www.hartz.com/wp-content/uploads/2022/03/dog-benefits-health-1.jpg" />
-              </figure>
-              <h2
-                style={{
-                  fontSize: "3.5rem",
-                  textAlign: "center",
-                  fontWeight: "900",
-                  marginTop: "1.5rem",
-                  fontFamily: "Fredoka",
-                }}
-              >
-                Broading
-              </h2>
-            </div>
-          </div>
-          <div className="service-items">
-            <div
-              style={{
-                display: "flex",
-                alignItems: "center",
-                flexDirection: "column",
-              }}
-            >
-              <figure>
-                <img src="https://www.hartz.com/wp-content/uploads/2022/03/dog-benefits-health-1.jpg" />
-              </figure>
-              <h2
-                style={{
-                  fontSize: "3.5rem",
-                  textAlign: "center",
-                  fontWeight: "900",
-                  marginTop: "1.5rem",
-                  fontFamily: "Fredoka",
-                }}
-              >
-                Training
-              </h2>
-            </div>
-          </div>
-          <div className="service-items">
-            <div
-              style={{
-                display: "flex",
-                alignItems: "center",
-                flexDirection: "column",
-              }}
-            >
-              <figure>
-                <img src="https://www.hartz.com/wp-content/uploads/2022/03/dog-benefits-health-1.jpg" />
-              </figure>
-              <h2
-                style={{
-                  fontSize: "3.5rem",
-                  textAlign: "center",
-                  fontWeight: "900",
-                  marginTop: "1.5rem",
-                  fontFamily: "Fredoka",
-                }}
-              >
-                Veterinary Care
-              </h2>
-            </div>
-          </div>
+          </div> */}
         </div>
       </section>
     </>

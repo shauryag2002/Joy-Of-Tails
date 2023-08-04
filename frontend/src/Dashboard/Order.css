@@ -10,12 +10,14 @@ table {
 }
 tr {
   font-size: 1.5rem;
+  width: 105px;
   cursor: pointer;
 }
 td {
-  font-size: 1.3rem;
+  font-size: 1.2rem;
   color: rgb(97, 95, 95);
-  padding: 1.4rem 0;
+  width: 200px;
+  padding: 0.5rem 0;
 }
 td:nth-child(6) {
   border: 1px solid rgb(23, 188, 23);
@@ -37,4 +39,22 @@ select {
   outline: none;
   padding: 0.5rem 1rem;
   border-radius: 5px;
+}
+
+@media only screen and (max-width: 914px) {
+  table {
+    width: 98vw;
+  }
+  th,
+  td {
+    font-size: 0.8rem;
+  }
+  td:nth-child(6) {
+    border: 1px solid rgb(23, 188, 23);
+    border: none;
+  }
+  select {
+    width: 20px;
+    height: 20px;
+  }
 }

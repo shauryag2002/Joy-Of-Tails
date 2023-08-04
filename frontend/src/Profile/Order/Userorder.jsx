@@ -4,6 +4,7 @@ import axios from "axios";
 
 export const Userorder = () => {
   const [order, setOrders] = useState([]);
+  const [user, setUser] = useState({});
 
   const getOrders = async () => {
     const { data } = await axios.get(
@@ -15,7 +16,7 @@ export const Userorder = () => {
       }
     );
     console.log(data);
-    setOrders(data);
+    setUser(data);
   };
 
   const changeStatus = (e, id) => {};
@@ -26,26 +27,49 @@ export const Userorder = () => {
   return (
     <ProfileLayout>
       <div className="items-wrapper">
-        <table style={{ width: "65vw" }}>
+        <table style={{ width: "75vw" }} className="user-table">
           <thead>
             <tr>
               <th>Sr No</th>
               <th>Order id</th>
               <th>Product Name</th>
-              <th>Address</th>
               <th>Price</th>
+              <th>quanty</th>
+              <th>Address</th>
               <th>Status</th>
             </tr>
           </thead>
+
           <tbody>
-            <tr>
-              <td>1</td>
-              <td>4654654454</td>
-              <td>peddi</td>
-              <td>nodia</td>
-              <td>1200</td>
-              <td>completed</td>
-            </tr>
+            {user.length > 0 &&
+              user.map((prod, index) => {
+                console.log(user);
+                return (
+                  <tr>
+                    <td>{index + 1}</td>
+                    <td style={{ width: "5%" }}>{prod._id}</td>
+                    <td style={{ width: "30%" }}>
+                      {prod.products.map((e) => {
+                        return <p style={{ fontSize: "1rem" }}>{e.name}</p>;
+                      })}
+                    </td>
+                    <td>
+                      {prod.products.map((e) => {
+                        return <p style={{ fontSize: "1rem" }}>₹{e.price}</p>;
+                      })}
+                    </td>
+                    <td>
+                      {" "}
+                      {prod.products.map((e) => {
+                        return <p style={{ fontSize: "1rem" }}>{e.quantity}</p>;
+                      })}
+                    </td>
+
+                    <td style={{ width: "20%" }}>{prod.address}</td>
+                    <td style={{ border: "none" }}>{prod.status}</td>
+                  </tr>
+                );
+              })}
           </tbody>
         </table>
       </div>

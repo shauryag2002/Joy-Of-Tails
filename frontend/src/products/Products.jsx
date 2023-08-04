@@ -2,13 +2,15 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import "./product.css";
 import { useSelector, useDispatch } from "react-redux";
+import { AiFillDownCircle } from "react-icons/ai";
 import { Rating } from "react-simple-star-rating";
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import Cookies from "js-cookie";
 import ReactPaginate from "react-paginate";
 import { AddShipping } from "../Store/ShipingSlice/ShipingSlice";
 
 export const Products = () => {
+  const [filterShow, setFilterShow] = useState(false);
   const [products, setAllProducts] = useState([]);
   const [page, setPage] = useState("");
   const [pageCount, setPageCount] = useState("");
@@ -21,36 +23,49 @@ export const Products = () => {
   const [brand, setBrand] = useState([]);
   const [isFilter, setIsFilter] = useState(false);
   const [isProduct, setIsProduct] = useState(true);
-
   const [filterProduct, setFilterProduct] = useState(false);
 
   const dispatch = useDispatch();
+  const params = useParams();
 
   const data = useSelector((state) => {
     return state.Shipping;
   });
 
   const getAllProducts = async () => {
-    const { data } = await axios.get(
-      `http://localhost:4000/api/product?limit=${6}`
-    );
-    setAllProducts(data.product);
-    setBrand(data.product);
-
-    // setBrand()
+    const { data } = await axios.get(`/api/product?limit=${12}`);
+    if (params.name === "all") {
+      setAllProducts(data.product);
+    } else {
+      setAllProducts(data.product);
+      setIsProduct(false);
+      const filter = data.product.filter((prod) => {
+        if (prod.categories.toLowerCase().includes(params.name.toLowerCase()))
+          return prod;
+        if (prod.brand.toLowerCase().includes(params.name.toLowerCase()))
+          return prod;
+      });
+      setIsFilter(true);
+      setFilterProduct([...filter]);
+    }
+    const newdata = [...new Set(data.product.map((item) => item.brand))];
+    setBrand(newdata);
+    const newCategory = [
+      ...new Set(data.product.map((item) => item.categories)),
+    ];
+    setCategories(newCategory);
     setPageCount(data.pageCount);
     const paginationPage = [];
     for (let i = 1; i <= data.count; i++) {
       paginationPage.push(i);
     }
     setPagination([...paginationPage]);
-
     setProducts1(data.product);
   };
 
   const changePage = async ({ selected }) => {
     const { data } = await axios.get(
-      `http://localhost:4000/api/product?page=${selected + 1}&limit=${6}`
+      `/api/product?page=${selected + 1}&limit=${12}`
     );
     setAllProducts(data.product);
   };
@@ -58,7 +73,7 @@ export const Products = () => {
 
   const addCart = async (product) => {
     const { data } = await axios.post(
-      "http://localhost:4000/api/cart",
+      "/api/cart",
       {
         userId: localStorage.getItem("id"),
         products: [
@@ -82,14 +97,10 @@ export const Products = () => {
     }
   };
   const getCategories = async function () {
-    const { data } = await axios.get("http://localhost:4000/api/category");
+    const { data } = await axios.get("/api/category");
     setCategories(data);
   };
   const filteredProducts = () => {
-    console.log(typeof ratings);
-    if (ratings === "1") {
-      window.location.reload();
-    }
     const filter1 = products.filter((product) => {
       const filter1 = products1.filter((product) => {
         return product.ratings >= ratings;
@@ -107,7 +118,6 @@ export const Products = () => {
         product.ratings >= ratings
       );
     });
-    console.log(filter1);
     setAllProducts(filter1);
   };
 
@@ -120,20 +130,45 @@ export const Products = () => {
     setIsProduct(false);
   };
 
+  const categorySearch = (title) => {
+    const filter = products.filter((prod) => {
+      return prod.categories.toLowerCase().includes(title.toLowerCase());
+    });
+    setFilterProduct([...filter]);
+    setIsFilter(true);
+    setIsProduct(false);
+  };
+
   useEffect(() => {
     filteredProducts();
   }, [ratings]);
   useEffect(() => {
     getAllProducts();
-    getCategories();
+    // getCategories();
   }, []);
 
   return (
     <>
       <div className="product-wrapper">
         <div className="filter-section">
-          <div className="filter">
-            <h2 style={{ fontSize: "2rem", textAlign: "center" }}>Filter</h2>
+          <div className={filterShow ? `show` : "filter-show"}>
+            <h2
+              style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                gap: "0.6rem",
+                fontSize: "1.4rem",
+              }}
+            >
+              Filter
+              <AiFillDownCircle
+                className="show-icon"
+                onClick={() => {
+                  setFilterShow(!filterShow);
+                }}
+              />
+            </h2>
             <div className="ratings top-space">
               <h2 style={{ fontSize: "1.6rem", textAlign: "left" }}>Rating</h2>
               <input
@@ -168,7 +203,16 @@ export const Products = () => {
                 }}
                 className="number-input inp"
               />
-              <button onClick={rangeFilter} style={{ marginLeft: "10px" }}>
+              <button
+                onClick={rangeFilter}
+                style={{
+                  marginLeft: "10px",
+                  padding: "0.1rem 1rem",
+                  backgroundColor: "tomato",
+                  border: "none",
+                  cursor: "pointer",
+                }}
+              >
                 GO
               </button>
             </div>
@@ -182,21 +226,30 @@ export const Products = () => {
               >
                 Categories
               </h2>
-              {categories.map((cat, i) => {
-                return (
-                  <div
-                    key={i}
-                    style={{
-                      fontSize: "1.3rem",
-                      textTransform: "capitalize",
-                      cursor: "pointer",
-                    }}
-                    className="top-space"
-                  >
-                    {cat.name}
-                  </div>
-                );
-              })}
+              <div
+                style={{
+                  fontSize: "1.3rem",
+                  textTransform: "capitalize",
+                  cursor: "pointer",
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: "0.4rem",
+                }}
+                className="top-space"
+              >
+                {categories.map((cat, i) => {
+                  return (
+                    <p
+                      key={i}
+                      onClick={() => {
+                        categorySearch(cat);
+                      }}
+                    >
+                      {cat}
+                    </p>
+                  );
+                })}
+              </div>
               <div>
                 <h2
                   style={{
@@ -218,17 +271,18 @@ export const Products = () => {
                 </p>
 
                 <ul className="brand">
-                  {brand.map((prod) => {
-                    return (
-                      <li
-                        onClick={() => {
-                          brandSearch(prod.brand);
-                        }}
-                      >
-                        {prod.brand}
-                      </li>
-                    );
-                  })}
+                  {brand.length > 0 &&
+                    brand.map((prod) => {
+                      return (
+                        <li
+                          onClick={() => {
+                            brandSearch(prod);
+                          }}
+                        >
+                          {prod}
+                        </li>
+                      );
+                    })}
                 </ul>
               </div>
             </div>
@@ -248,16 +302,14 @@ export const Products = () => {
               return (
                 <div className="products-section">
                   <div className="products-items">
-                    <Link to={`/products/${product._id}`}>
+                    <Link to={`/productsdetails/${product._id}`}>
                       <figure>
                         <img
                           src={`/uploads/${product.img[0]}`}
                           style={{ width: "100%" }}
                         />
                       </figure>
-                      <h2 style={{ textAlign: "center", fontSize: "1.5rem" }}>
-                        {product.title}
-                      </h2>
+                      <h2>{product.title}</h2>
                       <p
                         style={{
                           textAlign: "center",
@@ -302,14 +354,14 @@ export const Products = () => {
                 </div>
               );
             })}
-          {console.log(filterProduct)}
+
           {isFilter &&
             filterProduct.length > 0 &&
             filterProduct.map((product) => {
               return (
                 <div className="products-section">
                   <div className="products-items">
-                    <Link to={`/products/${product._id}`}>
+                    <Link to={`/productsdetails/${product._id}`}>
                       <figure>
                         <img
                           src={`/uploads/${product.img[0]}`}

@@ -14,33 +14,32 @@ const ConfirmOrder = ({ history }) => {
   const data = useSelector((state) => {
     return state.Shipping;
   });
+  console.log(data);
 
   //   const { shippingInfo, cartItems } = useSelector((state) => state.cart);
   //   const { user } = useSelector((state) => state.user);
   const [shippingInfo, setShippingInfo] = useState({
     phoneNo: 9876543210,
-    address: "abc street no. 6",
+    address: data.address,
     city: "delhi",
-    state: "delhi",
+    state: data.state,
     country: "delhi",
     pinCode: "110051",
     email: "abc@xyz.com",
   });
   const [user, setUser] = useState({ name: "abc" });
-  const [cartItems, setCartItems] = useState([
-    {
-      products: [
-        {
-          name: "product 1",
-          img: [
-            "https://cdn.shopify.com/s/files/1/0565/8021/0861/files/Frame_10976_1600x.png?v=1685180179",
-          ],
-          quantity: 100,
-          price: 6000,
-        },
-      ],
-    },
-  ]);
+  const [cartItems, setCartItems] = useState({
+    products: [
+      {
+        name: "product 1",
+        img: [
+          "https://cdn.shopify.com/s/files/1/0565/8021/0861/files/Frame_10976_1600x.png?v=1685180179",
+        ],
+        quantity: 100,
+        price: 6000,
+      },
+    ],
+  });
   useEffect(() => {
     const CartItemFun = async () => {
       const id = localStorage.getItem("id");
@@ -53,11 +52,11 @@ const ConfirmOrder = ({ history }) => {
         },
       });
       console.log(res);
-      setCartItems(res.data);
+      setCartItems(res.data.cart);
     };
     CartItemFun();
   }, []);
-  const subtotal = cartItems[0].products.reduce(
+  const subtotal = cartItems.products.reduce(
     (acc, item) => acc + item.quantity * item.price,
     0
   );
@@ -85,13 +84,14 @@ const ConfirmOrder = ({ history }) => {
   const checkoutHandler = async (amount) => {
     const {
       data: { key },
-    } = await axios.get("http://localhost:4000/api/order/getkey");
+    } = await axios.get("http://localhost:4000/api/razorpay/getkey");
 
     const {
       data: { order },
-    } = await axios.post("http://localhost:4000/api/order/checkout", {
+    } = await axios.post("http://localhost:4000/api/razorpay/checkout", {
       amount,
     });
+    console.log(data);
 
     const options = {
       key,
@@ -102,23 +102,37 @@ const ConfirmOrder = ({ history }) => {
       image:
         "https://m.media-amazon.com/images/S/al-eu-726f4d26-7fdb/4f1405ea-4f7e-4efd-a44f-f405588725ec._CR0%2C0%2C400%2C400_SX200_.png",
       order_id: order.id,
-      callback_url: `http://localhost:4000/api/order/paymentverification`,
-      // handler: async function (response) {
-      //   const res = await axios.post(
-      //     "http://localhost:4000/api/order/paymentveriupdate",
-      //     {
-      //       razorpay_payment_id: response.razorpay_payment_id,
-      //       razorpay_order_id: response.razorpay_order_id,
-      //       razorpay_signature: response.razorpay_signature,
-      //       name: user.name,
-      //       email: shippingInfo.email,
-      //       phoneNo: shippingInfo.phoneNo,
-      //       amount: shippingInfo.amount,
-      //       address,
-      //       products: cartItems.products,
-      //     }
-      //   );
-      // },
+      // callback_url: `http://localhost:4000/api/razorpay/paymentverification`,
+      handler: async function (response) {
+        const res = await axios.post("http://localhost:4000/api/order", {
+          // headers: {
+          //   token: localStorage.getItem("token"),
+          //   "Content-Type": "application/json",
+          // },
+          razorpay_payment_id: response.razorpay_payment_id,
+          razorpay_order_id: response.razorpay_order_id,
+          razorpay_signature: response.razorpay_signature,
+          name: user.name,
+          email: shippingInfo.email,
+          phoneNo: shippingInfo.phoneNo,
+          amount: Number(amount),
+          address,
+          products: cartItems.products,
+          userId: cartItems.userId,
+        });
+        console.log(response);
+        const redirect = await axios.post(
+          "http://localhost:4000/api/razorpay/paymentverification",
+          {
+            razorpay_payment_id: response.razorpay_payment_id,
+            razorpay_order_id: response.razorpay_order_id,
+            razorpay_signature: response.razorpay_signature,
+          }
+        );
+        window.location.replace(
+          `/paymentsuccess?reference=${response.razorpay_payment_id}`
+        );
+      },
       prefill: {
         name: user.name,
         email: shippingInfo.email,
@@ -151,7 +165,9 @@ const ConfirmOrder = ({ history }) => {
             <div className="confirmshippingAreaBox">
               <div>
                 <p>Name:</p>
-                <span>{data.name}</span>
+                <span>
+                  {localStorage.getItem("user") && localStorage.getItem("user")}
+                </span>
               </div>
               <div>
                 <p>Phone:</p>
@@ -167,7 +183,7 @@ const ConfirmOrder = ({ history }) => {
             <div style={{ fontSize: "2rem" }}>Your Cart Items:</div>
             <div className="confirmCartItemsContainer">
               {cartItems &&
-                cartItems[0].products.map((item) => (
+                cartItems.products.map((item) => (
                   <div key={item.product}>
                     <img src={`/uploads/` + item.img[0]} alt="Product" />
                     <Link to={`/product/${item.product}`}>

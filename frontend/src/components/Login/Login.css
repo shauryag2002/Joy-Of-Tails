@@ -65,6 +65,7 @@
   background: #e9f1ff;
   border-radius: 9px;
   margin-top: 15px;
+  cursor: pointer;
 }
 .loginWithGoogleLink {
   display: inline-block;
@@ -146,6 +147,7 @@
   font-weight: 500;
   font-size: 16px;
   line-height: 24px;
+  cursor: pointer;
   /* identical to box height */
 
   color: #ffffff;
@@ -179,6 +181,9 @@
   align-items: center;
   /* gap: 42px; */
   width: 100vw;
+}
+.forgetPass {
+  color: #4285f4;
 }
 @media screen and (max-width: 1000px) {
   .loginImage {

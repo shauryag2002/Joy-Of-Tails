@@ -2,6 +2,8 @@ const Featured = require("../models/FeaturedModel");
 const mongoose = require("mongoose");
 const multipleUpload = require("../utils/multer");
 const { verifyTokenAndAdmin } = require("../utils/verify");
+const fs = require("fs");
+const path = require("path");
 
 const router = require("express").Router();
 // GET FEATURE IMAGES
@@ -71,6 +73,14 @@ router.put("/:id", verifyTokenAndAdmin, async (req, res, next) => {
 // DELETE FEATURE IMAGES
 router.delete("/delete", verifyTokenAndAdmin, async (req, res, next) => {
   try {
+    const featureData = await Featured.findOne();
+
+    for (item of featureData.img) {
+      console.log(item);
+      fs.unlink(path.join(__dirname, `../public/uploads/${item}`), (err) => {
+        console.log(err);
+      });
+    }
     const feature = await Featured.deleteMany({});
     res
       .status(200)

@@ -10,3 +10,12 @@
   border-radius: 20px;
   cursor: pointer;
 }
+
+@media only screen and (max-width: 768px) {
+  .btn {
+    font-size: 1rem;
+    padding: 0.6rem 1rem;
+    margin-top: 1.3rem;
+    color: rgb(74, 185, 74);
+  }
+}

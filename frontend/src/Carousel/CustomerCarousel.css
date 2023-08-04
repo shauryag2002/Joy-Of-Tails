@@ -6,7 +6,7 @@
 }
 
 .customer-wrapper {
-  width: 70%;
+  width: 75%;
   display: flex;
   align-items: center;
   gap: 6rem;
@@ -29,12 +29,12 @@
   gap: 2rem;
 }
 .customer-content p {
-  font-size: 1.6rem;
+  font-size: 1.4rem;
   line-height: 3rem;
   font-weight: 100;
 }
 .customer-content h3 {
-  font-size: 2rem;
+  font-size: 2.6rem;
 }
 
 @media only screen and (max-width: 868px) {

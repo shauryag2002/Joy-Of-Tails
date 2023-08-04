@@ -154,10 +154,10 @@ router.delete("/:cartId/:pid", verifyToken, async (req, res, next) => {
 });
 // GET USER'S CART
 router.get("/find/:id", verifyTokenAndAuthorization, async (req, res, next) => {
-  console.log(req.params);
+  // console.log(req.params);
   try {
-    const cart = await Cart.find({ userId: req.params.id });
-    return res.status(200).json(cart);
+    const cart = await Cart.findOne({ userId: req.params.id });
+    return res.status(200).json({ success: true, cart });
   } catch (err) {
     return res.status(500).json(err);
   }

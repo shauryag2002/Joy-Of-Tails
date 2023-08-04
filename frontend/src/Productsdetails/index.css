@@ -64,6 +64,9 @@
   margin: auto;
   margin-top: 4rem;
 }
+.product-section-second .products-items h2 {
+  font-size: 1.2rem;
+}
 .product-section-second .products-items {
   border: none;
 }
@@ -76,28 +79,28 @@
   width: 100%;
   height: 100%;
 }
-.product-section-second button {
+.product-section-second .products-section button {
   background-color: orange;
-  width: 65%;
+  width: 100%;
   margin: 2rem auto;
   border-radius: 50px;
   outline: none;
-  padding: 0.8rem 4rem;
+  padding: 1rem 0.6rem;
   border: none;
   font-size: 1.3rem;
   font-weight: 550;
+  cursor: pointer;
 }
 
 .right .btn-container {
   display: flex;
   flex-direction: column;
-  gap: 2rem;
   margin-top: 2rem;
 }
 .right .btn {
   background-color: orange;
   color: #3c1007;
-  width: 25%;
+  width: 55%;
   cursor: pointer;
   border-radius: 50px;
   outline: none;
@@ -105,4 +108,44 @@
   border: none;
   font-size: 1.4rem;
   font-weight: 550;
+  margin-top: 1rem;
+}
+
+@media only screen and (max-width: 768px) {
+  .product-details-section {
+    display: grid;
+    grid-template-columns: 1fr;
+  }
+  .img-preview {
+    width: 75%;
+    height: 280px;
+    border: 2px solid rgb(239, 234, 234);
+  }
+  .right .btn-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    /* gap: 2rem; */
+    margin-top: 2rem;
+  }
+  .right .btn-container .btn {
+    width: auto;
+    padding: 1rem 4rem;
+  }
+  .product-section-second {
+    width: 95%;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+  }
+  .product-section-second .products-section {
+    font-size: 0.6rem;
+  }
+  .product-section-second .products-section .products-items figure {
+    height: 110px;
+  }
+
+  .product-section-second .products-section .products-items button {
+    width: 100%;
+    font-size: 0.7rem;
+  }
 }

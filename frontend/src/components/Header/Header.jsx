@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux/es/hooks/useSelector";
 import { motion } from "framer-motion";
-import compLogo from "../../Asset/Logo.svg";
+import compLogo from "../../Asset/logo.png";
 import { BsHeadphones } from "react-icons/bs";
 import { NavLink, Link, useNavigate } from "react-router-dom";
 import {
@@ -32,6 +32,10 @@ export const Header = () => {
   const { isAdmin, isUser } = useSelector((state) => {
     return state.Admin;
   });
+  const data = useSelector((state) => {
+    return state.Cart;
+  });
+  console.log(data);
 
   const search = async () => {
     console.log(keyword);
@@ -148,14 +152,14 @@ export const Header = () => {
               <li>
                 <NavLink to="/">Home</NavLink>
               </li>
-              <li>Service</li>
+
               {isAdmin && (
                 <li>
                   <NavLink to="/dashboard">Dashboard</NavLink>
                 </li>
               )}
               <li>
-                <NavLink to="/products">Products</NavLink>
+                <NavLink to="/products/all">Products</NavLink>
               </li>
             </ul>
             <div className="account">
@@ -165,7 +169,8 @@ export const Header = () => {
                   style={{
                     display: "flex",
                     flexDirection: "column",
-                    gap: "1.2rem",
+                    alignItems: "center",
+                    gap: "1.8rem",
                   }}
                 >
                   {localStorage.getItem("token") ? (
@@ -183,6 +188,11 @@ export const Header = () => {
                       <NavLink to="/register">Register</NavLink>
                     </li>
                   )}
+                  {isUser && (
+                    <li>
+                      <Link to="/userorder">My Orders</Link>
+                    </li>
+                  )}
 
                   {isUser && (
                     <li>
@@ -190,10 +200,10 @@ export const Header = () => {
                         to="/register"
                         onClick={() => {
                           localStorage.clear();
-                          dispatch(false);
+                          // dispatch(false);
                         }}
                       >
-                        logout
+                        Logout
                       </NavLink>
                     </li>
                   )}
@@ -249,9 +259,9 @@ export const Header = () => {
                   setMenu(true);
                 }}
               >
-                <NavLink to="/products">Products</NavLink>
+                <NavLink to="/products/all">Products</NavLink>
               </li>
-              <li>
+              {/* <li>
                 <NavLink
                   to="/login"
                   onClick={() => {
@@ -260,8 +270,59 @@ export const Header = () => {
                 >
                   Login
                 </NavLink>
-              </li>
-              <li>
+              </li> */}
+              {isAdmin && (
+                <li
+                  onClick={() => {
+                    setMenu(true);
+                  }}
+                >
+                  <NavLink to="/dashboard">Dashboard</NavLink>
+                </li>
+              )}
+
+              {localStorage.getItem("token") ? (
+                <li
+                  onClick={() => {
+                    setMenu(true);
+                  }}
+                >
+                  <Link to="/profile">My Profile</Link>
+                </li>
+              ) : (
+                <li
+                  onClick={() => {
+                    setMenu(true);
+                  }}
+                >
+                  <NavLink to="/login">login</NavLink>
+                </li>
+              )}
+
+              {!localStorage.getItem("token") && (
+                <li
+                  onClick={() => {
+                    setMenu(true);
+                  }}
+                >
+                  <NavLink to="/register">Register</NavLink>
+                </li>
+              )}
+              {isUser && (
+                <li>
+                  <NavLink
+                    to="/register"
+                    onClick={() => {
+                      localStorage.clear();
+                      // dispatch(false);
+                    }}
+                  >
+                    logout
+                  </NavLink>
+                </li>
+              )}
+
+              {/* <li>
                 <NavLink
                   to="/register"
                   onClick={() => {
@@ -270,7 +331,7 @@ export const Header = () => {
                 >
                   Register
                 </NavLink>
-              </li>
+              </li> */}
             </ul>
           </div>
         </div>

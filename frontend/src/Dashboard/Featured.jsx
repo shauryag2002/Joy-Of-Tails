@@ -40,17 +40,19 @@ export const Featured = () => {
   };
 
   const deleteFeatured = async () => {
-    const { data } = await axios.delete(
-      "http://localhost:4000/api/featured/delete",
-      {
-        headers: {
-          token: localStorage.getItem("token"),
-        },
+    const confirm = window.confirm("Are you sure");
+    if (confirm) {
+      const { data } = await axios.delete(
+        "http://localhost:4000/api/featured/delete",
+        {
+          headers: {
+            token: localStorage.getItem("token"),
+          },
+        }
+      );
+      if (data.success) {
+        window.location.reload();
       }
-    );
-    console.log(data);
-    if (data.success) {
-      window.location.reload();
     }
   };
 
